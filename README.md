@@ -5,7 +5,7 @@ Personal portfolio site for **Navnitan SV**, served with [GitHub Pages](https://
 ## Publish as `navnitan-7.github.io/portfolio`
 
 1. Create a new repository on GitHub named **`portfolio`** under account **navnitan-7** (or use the existing repo).
-2. Push this folder to the `main` branch:
+2. Push this folder to the `main` branch (SSH recommended; [HTTPS needs a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens), not your GitHub password):
 
    ```bash
    cd portfolio
@@ -13,7 +13,7 @@ Personal portfolio site for **Navnitan SV**, served with [GitHub Pages](https://
    git add .
    git commit -m "Add portfolio site for GitHub Pages"
    git branch -M main
-   git remote add origin https://github.com/navnitan-7/portfolio.git
+   git remote add origin git@github.com:navnitan-7/portfolio.git
    git push -u origin main
    ```
 
