@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Talent Profiles Pipeline at Draup: PySpark ingestion, ML synonymization and skills, Postgres, and data quality. Navnitan SV."
+      content="Talent Profiles Pipeline at Draup: PySpark ingestion, English normalization, entity synonymization, skills ML, layered data quality, Postgres. Navnitan SV."
     />
     <title>Talent Profiles Pipeline · Draup · Navnitan SV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,22 +46,231 @@
           <header class="report-header">
             <p class="report-context">Draup · SDE 2 · Dec 2024 to Present</p>
             <h1 class="report-title">Talent Profiles Pipeline</h1>
-            <p class="report-tech">PySpark · ML Models · Postgres</p>
+            <p class="report-tech">PySpark · ML &amp; NLP APIs · Entity synonymization · Postgres · Data quality</p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I built and hardened a PySpark pipeline that ingests talent profiles from several major sources, runs synonymization and skills models, and lands in Postgres. Along the way I halved model runtime, added quality gates at multiple stages so bad data never shipped, and drove production failures down from the majority of runs to a small, manageable rate.
+              I worked on a large-scale talent pipeline that ingests profiles from LinkedIn, Doximity, Google Scholar, Crunchbase, and related sources, then enriches and cleans them through ML models and external APIs. Free-text and structured fields are normalized for a single analytical language surface (English), and company names, titles, and locations are synonymized through multiple dedicated models; skills are inferred by a separate model. After enrichment, data is denormalized and loaded into Postgres for customer-facing analytics. I cut end-to-end model runtime by about half, built quality checks across layers, and helped take production failures from roughly 60% of runs down to about 5%.
             </p>
             <p>
-              The pipeline consolidates profiles from LinkedIn, Doximity, Google Scholar, Crunchbase, and related feeds into a unified shape for downstream intelligence products. Ingestion at that scale meant leaning on PySpark for distributed transforms, careful partitioning, and defensive parsing so one bad batch did not poison an entire run.
-            </p>
-            <p>
-              Entity synonymization and skills prediction were the heaviest ML steps. I profiled bottlenecks in feature prep and inference, then restructured stages and tuned cluster settings until end-to-end model time dropped by about half, without sacrificing the accuracy thresholds product needed for customer-facing views.
-            </p>
-            <p>
-              Reliability used to be the main pain point: roughly 60% of production runs failed under load or data drift. I added layered validation (schema checks, distributional alerts, and business rules at stage boundaries) so issues surfaced before delivery. Targeted fixes on the flakiest joins and external dependencies brought the failure rate down to about 5%, which made the pipeline something teams could depend on for weekly refreshes.
+              This system was already in flight when I joined; my contribution centered on <strong>performance</strong>, <strong>reliability</strong>, and <strong>data quality</strong>—making the heavy ML stages cheaper to run, ensuring bad rows were caught before they reached Postgres, and hardening the weakest joins and external calls so the pipeline could sustain regular refreshes without firefighting.
             </p>
           </div>
+
+          <section class="report-wide" aria-labelledby="talent-e2e-title">
+            <h2 id="talent-e2e-title">End-to-end talent pipeline</h2>
+            <p class="report-sublead">
+              Ingestion through enrichment, denormalization, and delivery to the analytics store.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                Raw profiles arrive with inconsistent schemas, languages, and entity spellings. The PySpark pipeline normalizes parsing, fans out into <strong>parallel enrichment branches</strong> (language alignment, synonymization, skills inference, and other API-backed cleaners), then merges into a denormalized row shape suited for fast reads in Postgres. That fan-out / merge pattern isolates slow or flaky model calls so one stage does not block unrelated work longer than necessary.
+              </p>
+              <p>
+                <strong>Company name, job title, and location</strong> strings are synonymized using several synonym models so downstream reporting groups variants to canonical entities. <strong>Skills</strong> are predicted by a dedicated model once text fields are stable. Denormalization trades storage for query simplicity: analytics products read wide tables without repeating expensive joins across the serving path.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Dataflow: heterogeneous sources land in Spark; cleaning and parallel ML or API enrichment (including English normalization and synonymization) converge before denormalization and Postgres load for customer analytics.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 560" xmlns="http://www.w3.org/2000/svg" aria-labelledby="talent-e2e-flow-title talent-e2e-flow-desc">
+                  <title id="talent-e2e-flow-title">End-to-end talent profiles pipeline</title>
+                  <desc id="talent-e2e-flow-desc">
+                    LinkedIn, Doximity, Google Scholar, Crunchbase feed PySpark ingest and cleaning, then parallel enrichment including English text, synonym models, skills model, other APIs, merge, denormalize, Postgres, analytics.
+                  </desc>
+                  <defs>
+                    <marker id="talent-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="558" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <rect x="40" y="28" width="188" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="134" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">LinkedIn</text>
+                  <rect x="40" y="76" width="188" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="134" y="100" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Doximity</text>
+                  <rect x="248" y="28" width="188" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="342" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Google Scholar</text>
+                  <rect x="248" y="76" width="188" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="342" y="100" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Crunchbase</text>
+                  <rect x="456" y="52" width="188" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="550" y="76" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Other feeds</text>
+                  <rect x="278" y="148" width="364" height="48" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="170" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">PySpark ingest · parse · dedupe keys</text>
+                  <text x="460" y="186" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Distributed transforms · defensive parsing</text>
+                  <line x1="134" y1="68" x2="360" y2="148" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="134" y1="96" x2="380" y2="148" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="342" y1="68" x2="420" y2="148" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="342" y1="96" x2="440" y2="148" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="550" y1="92" x2="480" y2="148" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <rect x="318" y="220" width="284" height="40" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="244" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Row-level cleaning · schema alignment</text>
+                  <line x1="460" y1="196" x2="460" y2="220" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <rect x="48" y="292" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="148" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">English normalization</text>
+                  <text x="148" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Translate / align text</text>
+                  <rect x="360" y="292" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Synonym models</text>
+                  <text x="460" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Company · title · location</text>
+                  <rect x="672" y="292" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="772" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Skills model + APIs</text>
+                  <text x="772" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Inference · enrichment</text>
+                  <path d="M 400 260 L 148 292" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#talent-arr)" />
+                  <line x1="460" y1="260" x2="460" y2="292" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <path d="M 520 260 L 772 292" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#talent-arr)" />
+                  <rect x="318" y="372" width="284" height="44" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="394" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Merge enriched attributes · QC checkpoints</text>
+                  <text x="460" y="408" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Layered validation at stage boundaries</text>
+                  <line x1="148" y1="340" x2="380" y2="372" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="460" y1="340" x2="460" y2="372" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <line x1="772" y1="340" x2="540" y2="372" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <rect x="328" y="436" width="264" height="40" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="460" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Denormalize · wide serving shape</text>
+                  <line x1="460" y1="416" x2="460" y2="436" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                  <rect x="338" y="496" width="244" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="518" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Postgres · customer analytics</text>
+                  <line x1="460" y1="476" x2="460" y2="496" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
+                </svg>
+              </div>
+            </figure>
+            <div class="report-body">
+              <p>
+                The diagram highlights two ideas that mattered in production: <strong>parallel enrichment</strong> so independent models could scale out, and a deliberate <strong>merge point</strong> where quality rules could see the full enriched row before denormalization. That merge point is where many latent inconsistencies surfaced—for example, a canonical company string paired with a title still in another language—so checks here prevented confusing customer-facing slices.
+              </p>
+            </div>
+          </section>
+
+          <section class="report-wide" aria-labelledby="talent-lang-title">
+            <h2 id="talent-lang-title">Workflow: language normalization (English)</h2>
+            <p class="report-sublead">
+              Aligning multilingual profile text to a single English surface before entity and skills models run.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                Talent data is global: headlines, summaries, and employer strings often arrive in languages other than English. The pipeline runs a dedicated <strong>language normalization</strong> branch so downstream synonymization and skills models consume comparable text. Practically, that means detecting or inferring source language on relevant fields, then translating or otherwise aligning them to English while preserving identifiers and structured keys that must not be rewritten.
+              </p>
+              <p>
+                Ordering matters: normalization typically runs <strong>before</strong> heavy entity synonymization so models trained on English-centric gazetteers and embeddings see consistent input. Rows that fail language detection or translation guardrails can be quarantined or flagged at the next quality checkpoint rather than silently poisoning canonical entity tables.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Workflow: raw multilingual text is classified, translated or aligned to English, validated, then passed to synonym and skills stages.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 340" xmlns="http://www.w3.org/2000/svg" aria-labelledby="talent-lang-flow-title talent-lang-flow-desc">
+                  <title id="talent-lang-flow-title">English normalization workflow</title>
+                  <desc id="talent-lang-flow-desc">
+                    Raw fields, language detection, translate to English, validation, merge to profile, then downstream synonym and skills models.
+                  </desc>
+                  <defs>
+                    <marker id="talent-arr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="338" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <rect x="48" y="40" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="148" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Raw text fields</text>
+                  <text x="148" y="80" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Headline · summary · bio snippets</text>
+                  <rect x="288" y="40" width="220" height="48" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="398" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Language detection</text>
+                  <text x="398" y="80" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Per-field or record signals</text>
+                  <rect x="548" y="40" width="220" height="48" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="658" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Translate / align → English</text>
+                  <text x="658" y="80" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Model or API · keep IDs stable</text>
+                  <line x1="248" y1="64" x2="288" y2="64" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
+                  <line x1="508" y1="64" x2="548" y2="64" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
+                  <rect x="268" y="128" width="384" height="48" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="150" text-anchor="middle" fill="#c4a574" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Validation · length · script checks · confidence thresholds</text>
+                  <text x="460" y="166" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Quarantine or flag low-confidence rows</text>
+                  <line x1="658" y1="88" x2="460" y2="128" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
+                  <rect x="308" y="208" width="304" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="234" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Merge English text back onto profile record</text>
+                  <line x1="460" y1="176" x2="460" y2="208" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
+                  <rect x="260" y="276" width="400" height="44" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="302" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Downstream: synonymization (company · title · location) · skills model</text>
+                  <line x1="460" y1="252" x2="460" y2="276" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
+                </svg>
+              </div>
+            </figure>
+          </section>
+
+          <section class="report-wide" aria-labelledby="talent-syn-title">
+            <h2 id="talent-syn-title">Workflow: entity synonymization</h2>
+            <p class="report-sublead">
+              Mapping noisy surface strings to canonical company, title, and location entities via multiple synonym models.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                The brag doc called out <strong>multiple synonym models</strong> for company name, job title, and location—reflecting that each attribute has different ambiguity and vocabulary. Titles are sparse and creative; companies appear with legal suffixes, rebrands, and subsidiaries; locations mix geocodes, free text, and abbreviations. The pipeline routes each attribute family to the model stack tuned for that problem, then joins canonical identifiers back onto the profile.
+              </p>
+              <p>
+                Synonymization sits after text is in a <strong>consistent language</strong> (English) so string similarity and gazetteer lookups behave predictably. Outputs feed both Postgres serving tables and downstream aggregates: if two spellings collapse to one canonical employer, customer dashboards stop double-counting talent pools.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Workflow: English-stable strings fan out to attribute-specific synonym models, merge canonical IDs and labels, then reconcile conflicts before load.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 400" xmlns="http://www.w3.org/2000/svg" aria-labelledby="talent-syn-flow-title talent-syn-flow-desc">
+                  <title id="talent-syn-flow-title">Entity synonymization workflow</title>
+                  <desc id="talent-syn-flow-desc">
+                    English-normalized strings split to company, title, and location synonym models, then merge canonical entities with scoring and QC.
+                  </desc>
+                  <defs>
+                    <marker id="talent-arr3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="398" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <rect x="310" y="32" width="300" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="56" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">English-stable entity strings</text>
+                  <text x="460" y="72" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">From normalization branch + structured fields</text>
+                  <rect x="48" y="120" width="248" height="56" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="172" y="142" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Company synonym model(s)</text>
+                  <text x="172" y="158" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Legal names · brands · aliases</text>
+                  <rect x="336" y="120" width="248" height="56" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="142" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Title synonym model(s)</text>
+                  <text x="460" y="158" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Seniority · function normalization</text>
+                  <rect x="624" y="120" width="248" height="56" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="748" y="142" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Location synonym model(s)</text>
+                  <text x="748" y="158" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Geo text · regions · cities</text>
+                  <path d="M 380 80 L 172 120" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#talent-arr3)" />
+                  <line x1="460" y1="80" x2="460" y2="120" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                  <path d="M 540 80 L 748 120" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#talent-arr3)" />
+                  <rect x="258" y="212" width="404" height="52" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="234" text-anchor="middle" fill="#c4a574" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Merge canonical IDs · labels · confidence scores</text>
+                  <text x="460" y="250" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Resolve conflicts · fallback to raw when below threshold</text>
+                  <line x1="172" y1="176" x2="360" y2="212" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                  <line x1="460" y1="176" x2="460" y2="212" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                  <line x1="748" y1="176" x2="560" y2="212" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                  <rect x="300" y="292" width="320" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="318" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">QC: cross-field sanity · optional human review queue</text>
+                  <line x1="460" y1="264" x2="460" y2="292" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                  <rect x="338" y="352" width="244" height="36" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="374" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Continue to skills + denormalized load</text>
+                  <line x1="460" y1="336" x2="460" y2="352" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr3)" />
+                </svg>
+              </div>
+            </figure>
+          </section>
+
+          <section class="report-wide" aria-labelledby="talent-dq-title">
+            <h2 id="talent-dq-title">Layered data quality and reliability</h2>
+            <p class="report-sublead">
+              Catching schema drift, bad distributions, and business-rule violations before Postgres.
+            </p>
+            <div class="report-body">
+              <p>
+                I implemented <strong>data quality checks across multiple layers</strong>: early schema and parsing guarantees after ingest, per-stage validations around model outputs (null rates, score distributions, unexpected cardinality), and pre-load assertions on denormalized rows. The goal was to fail fast inside the pipeline instead of shipping silent errors to analytics consumers.
+              </p>
+              <p>
+                Reliability work targeted the highest-loss failure modes: fragile joins, unstable external APIs, and resource contention during peak model inference. Together with quality gating, optimizations brought the failure rate from roughly <strong>60%</strong> of production runs to about <strong>5%</strong>, while model-side tuning reduced total model runtime by about <strong>50%</strong>—making scheduled refreshes predictable enough for product teams to trust.
+              </p>
+            </div>
+          </section>
         </div>
       </article>
     </main>

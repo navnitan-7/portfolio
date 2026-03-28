@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="DAAS at Draup: customer data delivery, GraphQL, Airflow, Trino, and agent-assisted SQL. Navnitan SV." />
+    <meta
+      name="description"
+      content="DAAS at Draup: customer data delivery, GraphQL, Airflow, Trino, Spark, multi-agent SQL optimization, and scheduled exports. Navnitan SV."
+    />
     <title>DAAS · Draup · Navnitan SV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,22 +46,164 @@
           <header class="report-header">
             <p class="report-context">Draup · SDE 2 · Dec 2024 to Present</p>
             <h1 class="report-title">DAAS</h1>
-            <p class="report-tech">GraphQL · Airflow · Trino</p>
+            <p class="report-tech">GraphQL · Airflow · Trino · Apache Spark · Multi-agent systems</p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I owned a data-delivery framework that lets customers get exports on a schedule, wired through GraphQL and executed end-to-end in Airflow, from gathering requirements and calling our graph layer to running Trino SQL. Later I layered in agent-assisted SQL optimization, which cut average query time by about a fifth and dropped failures substantially.
+              I built and evolved a data-as-a-service delivery framework: customer data requirements expressed as structured input drive scheduled pipelines that generate warehouse queries, execute them, and push results to the right destination. A GraphQL layer turns requirement JSON into SQL; Airflow orchestrates the full run path; Trino (and Spark where needed) executes the work. I then introduced a multi-agent stack to analyze requirements, pick the right physical tables and relationships, and iteratively generate and fix SQL or Spark code—improving typical query time by about 20% and cutting automated-run failures by about 40%.
             </p>
             <p>
-              The team needed a repeatable way to stand up customer-specific data deliveries without hand-built jobs for every account. I built a framework that automates those pipelines behind a GraphQL API: schedules, configuration, and orchestration live in one place, and operators can reason about deliveries as structured workflows rather than ad hoc scripts.
-            </p>
-            <p>
-              Airflow is the backbone of the run path: collecting requirements from metadata, invoking the graph API where needed, and executing the generated Trino SQL against our warehouse. That end-to-end contract made failures easier to trace and retry, and kept the surface area for new customer shapes small.
-            </p>
-            <p>
-              The largest step-change came from augmenting the framework with AI agents that review and refine generated SQL before execution. That reduced bad or inefficient queries hitting the cluster, improved typical runtimes by roughly 20%, and cut the failure rate on automated runs by about 40%, which mattered a lot once delivery volume grew.
+              Before this work, standing up a new customer export often meant bespoke jobs and fragile hand-written SQL. The framework treats a delivery as a contract: capture the requirement once, compile it to executable code, run it on a schedule, and surface clear lineage from configuration through execution. That pattern scales to many customers without multiplying operational toil.
             </p>
           </div>
+
+          <section class="report-wide" aria-labelledby="daas-sched-title">
+            <h2 id="daas-sched-title">Scheduled data delivery pipeline</h2>
+            <p class="report-sublead">
+              From customer requirement metadata to compiled SQL and warehouse execution under Airflow.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                Each delivery starts from the customer’s <strong>data requirement</strong>: which entities, filters, grains, and refresh cadence they need. The orchestration layer collects that configuration on the schedule we owe them, calls a <strong>GraphQL API</strong> that accepts the requirement as JSON, and receives back a <strong>SQL script</strong> tailored to our semantic graph and physical layout. Airflow sequences the steps—fetch requirements, invoke the API, materialize or stream results—so retries, alerting, and dependencies stay consistent across tenants.
+              </p>
+              <p>
+                Execution targets <strong>Trino</strong> against the analytical warehouse for interactive SQL paths; where volume or shape demands it, the same logical requirement can map to <strong>Spark</strong> jobs. Keeping compilation (graph API) separate from execution (engine) meant we could evolve the warehouse and customer contracts independently while preserving one operational playbook.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Dataflow: scheduled runs pull customer requirements, the GraphQL layer emits SQL, optional agent passes refine the script, and Trino (or Spark) executes before results are delivered downstream.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 480" xmlns="http://www.w3.org/2000/svg" aria-labelledby="daas-sched-flow-title daas-sched-flow-desc">
+                  <title id="daas-sched-flow-title">DAAS scheduled delivery dataflow</title>
+                  <desc id="daas-sched-flow-desc">
+                    Customer schedule and requirement config feed Airflow, which calls GraphQL to produce SQL, optionally runs agent optimization, executes on Trino or Spark, and pushes data to the customer destination.
+                  </desc>
+                  <defs>
+                    <marker id="daas-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="478" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <rect x="48" y="36" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="148" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Customer schedule</text>
+                  <text x="148" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Cron / SLA window</text>
+                  <rect x="276" y="36" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="376" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Data requirement</text>
+                  <text x="376" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">JSON contract per tenant</text>
+                  <rect x="504" y="36" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="604" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Metadata store</text>
+                  <text x="604" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Requirements registry</text>
+                  <rect x="732" y="36" width="140" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="802" y="66" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Secrets / routing</text>
+                  <rect x="228" y="124" width="464" height="56" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="148" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Airflow DAG: collect requirements · task boundaries · retries</text>
+                  <text x="460" y="166" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Single orchestration spine for all customer deliveries</text>
+                  <line x1="148" y1="84" x2="360" y2="124" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <line x1="376" y1="84" x2="420" y2="124" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <line x1="604" y1="84" x2="500" y2="124" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <rect x="268" y="212" width="384" height="52" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="234" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">GraphQL API: requirement JSON → SQL script</text>
+                  <text x="460" y="250" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Semantic graph → physical tables &amp; joins</text>
+                  <line x1="460" y1="180" x2="460" y2="212" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <rect x="248" y="292" width="424" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Agent-assisted optimization (optional pass)</text>
+                  <text x="460" y="330" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Refine SQL before execution · fewer bad plans</text>
+                  <line x1="460" y1="264" x2="460" y2="292" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <rect x="288" y="364" width="344" height="44" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="390" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Execute: Trino SQL · Spark jobs when needed</text>
+                  <line x1="460" y1="340" x2="460" y2="364" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                  <rect x="318" y="428" width="284" height="36" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="450" text-anchor="middle" fill="#c4a574" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Push to customer destination · delivery confirmation</text>
+                  <line x1="460" y1="408" x2="460" y2="428" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr)" />
+                </svg>
+              </div>
+            </figure>
+            <div class="report-body">
+              <p>
+                The diagram shows the <strong>linear spine</strong> operators rely on: everything funnels through Airflow so a failed compile or a slow cluster query shows up as the same class of incident, with logs tied to a requirement version and tenant. The optional agent step sits in the middle on purpose—it improves the artifact before it touches the warehouse, rather than patching failures only after the fact.
+              </p>
+            </div>
+          </section>
+
+          <section class="report-wide" aria-labelledby="daas-agent-title">
+            <h2 id="daas-agent-title">Multi-agent requirement analysis and code generation</h2>
+            <p class="report-sublead">
+              Specialized agents for requirements, schema grounding, and iterative SQL or Spark codegen with engine feedback.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                The enhanced framework uses a <strong>multi-agent system</strong> rather than a single-shot code generator. A <strong>requirement analyzing agent</strong> interprets the customer’s intent and constraints. A <strong>table and column selection agent</strong> grounds that intent in the warehouse: it proposes the relevant tables and columns, attaches human-readable descriptions, and surfaces <strong>relationships</strong> (join keys, cardinality) so generated code does not hallucinate foreign keys. A <strong>code generation agent</strong> then emits either SQL for Trino or Spark transformations, depending on the workload profile.
+              </p>
+              <p>
+                Generated code does not ship blindly. It <strong>runs iteratively</strong> on Spark or Trino; parse errors, semantic mismatches, and engine exceptions are fed back as structured feedback so the agents can revise predicates, joins, or projections. That closed loop is what drove the measured gains: shorter typical runtimes (about <strong>20%</strong>) because plans were better constrained to real tables, and a much lower <strong>failure rate</strong> (about <strong>40%</strong> relative reduction) because bad SQL was corrected before it burned a full delivery window.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Workflow: requirement JSON moves through analysis and schema selection, then codegen executes on the engine; failures loop back as feedback until the script succeeds or hits policy limits.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 520" xmlns="http://www.w3.org/2000/svg" aria-labelledby="daas-agent-flow-title daas-agent-flow-desc">
+                  <title id="daas-agent-flow-title">Multi-agent SQL and Spark codegen workflow</title>
+                  <desc id="daas-agent-flow-desc">
+                    Requirement analyzing agent, table and column selection agent with relationships, code generation agent, execution on Spark or Trino, and feedback loop on failure.
+                  </desc>
+                  <defs>
+                    <marker id="daas-arr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="518" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <rect x="340" y="32" width="240" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="58" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Requirement JSON (customer contract)</text>
+                  <rect x="300" y="100" width="320" height="52" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="122" text-anchor="middle" fill="#c4a574" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Agent 1 · Requirement analysis</text>
+                  <text x="460" y="140" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Intent, filters, grain, edge cases</text>
+                  <line x1="460" y1="76" x2="460" y2="100" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr2)" />
+                  <rect x="260" y="180" width="400" height="64" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="202" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Agent 2 · Table &amp; column selection</text>
+                  <text x="460" y="218" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Relevant tables · columns · descriptions</text>
+                  <text x="460" y="234" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Table relationships &amp; join paths</text>
+                  <line x1="460" y1="152" x2="460" y2="180" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr2)" />
+                  <rect x="290" y="268" width="340" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="290" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Agent 3 · Code generation</text>
+                  <text x="460" y="306" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Trino SQL or Spark transformations</text>
+                  <line x1="460" y1="244" x2="460" y2="268" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr2)" />
+                  <rect x="318" y="344" width="284" height="48" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="366" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Execute on Spark or Trino</text>
+                  <text x="460" y="382" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Iterative trial runs</text>
+                  <line x1="460" y1="320" x2="460" y2="344" stroke="#6b7380" stroke-width="1.2" marker-end="url(#daas-arr2)" />
+                  <rect x="620" y="420" width="260" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="750" y="440" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Success → handoff to delivery DAG</text>
+                  <text x="750" y="454" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Validated script</text>
+                  <path d="M 460 392 L 460 420 L 620 442" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#daas-arr2)" />
+                  <rect x="48" y="400" width="240" height="56" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="168" y="422" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Engine errors &amp; diagnostics</text>
+                  <text x="168" y="438" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Feedback to agents</text>
+                  <text x="168" y="452" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Revised codegen</text>
+                  <path d="M 318 368 L 168 400" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#daas-arr2)" />
+                  <path d="M 168 400 L 168 212 L 260 212" stroke="#6b7380" stroke-width="1" fill="none" stroke-dasharray="5 4" opacity="0.85" marker-end="url(#daas-arr2)" />
+                  <text x="120" y="300" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Iterate until pass</text>
+                </svg>
+              </div>
+            </figure>
+            <div class="report-body">
+              <p>
+                Splitting responsibilities across agents keeps each step <strong>auditable</strong>: you can inspect which tables were selected and why before trusting a query plan. The feedback edge from the engine back into analysis and codegen is the critical difference from static templating—it encodes the warehouse’s real behavior, not only its documentation.
+              </p>
+            </div>
+          </section>
+
+          <section class="report-wide" aria-labelledby="daas-impact-title">
+            <h2 id="daas-impact-title">Impact summary</h2>
+            <div class="report-body">
+              <p>
+                The framework turned customer exports into a <strong>repeatable product surface</strong>: GraphQL in, SQL out, Airflow in the middle, Trino and Spark at the bottom. Agent-assisted optimization and the multi-agent codegen loop delivered measurable improvements—about <strong>20% faster</strong> typical query execution and about <strong>40% fewer failures</strong> on automated runs—without abandoning the structured requirement contract that operations and customers already understood.
+              </p>
+            </div>
+          </section>
         </div>
       </article>
     </main>
