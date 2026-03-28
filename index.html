@@ -39,10 +39,9 @@
         <div class="hero-grid">
           <div class="hero-copy">
             <p class="hero-kicker">Software engineer</p>
-            <h1 id="hero-heading" class="hero-title">Building reliable data systems and ML-backed pipelines.</h1>
+            <h1 id="hero-heading" class="hero-title">Building intelligent systems at the intersection of data, machine learning, and reliability.</h1>
             <p class="hero-lead">
-              SDE 2 at Draup. IIT Madras (Engineering Physics). I care about pipeline quality, measurable impact, and
-              clear interfaces between data, models, and users.
+              My current interests include building scalable data systems, improving system reliability, and exploring how machine learning systems can be made more robust and maintainable in real-world environments.
             </p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="mailto:snavnitan@gmail.com">Email me</a>
@@ -62,15 +61,16 @@
         <div class="section-inner">
           <h2 class="section-title">About</h2>
           <p class="prose">
-            I work on customer-facing data delivery and large-scale talent profile pipelines—automating schedules,
-            hardening quality checks, and improving model runtime and reliability in production.
-          </p>
+            I graduated from IIT Madras with a degree in Engineering Physics. Since then, I have worked as a backend and data engineer across enterprise 
+            software and AI-driven products, building large-scale data pipelines and machine learning systems used in production. My experience spans industries including industrial automation, enterprise analytics, and talent intelligence platforms, where I focused on system reliability, data quality, and performance.          </p>
         </div>
       </section>
 
       <section id="experience" class="section">
         <div class="section-inner">
           <h2 class="section-title">Experience</h2>
+          
+          <!-- Draup -->
           <article class="card">
             <header class="card-header">
               <div>
@@ -82,18 +82,83 @@
               <h4 class="card-subtitle">DAAS</h4>
               <p class="card-tags">GraphQL · Airflow · Trino</p>
               <ul class="card-list">
-                <li>Built a data delivery framework with configurable schedules and GraphQL API integration.</li>
-                <li>Orchestrated end-to-end pipelines: requirements, Graph API, and Trino SQL via Airflow.</li>
-                <li>Added AI agents to optimize generated SQL, cutting query runtime ~20% and failures ~40%.</li>
+                <li>Built a data delivery framework automating customer data pipelines with configurable schedules and GraphQL API integration.</li>
+                <li>Orchestrated end-to-end pipeline using Airflow to collect requirements, invoke Graph API, and execute Trino SQL scripts.</li>
+                <li>Enhanced framework with AI Agents to optimize generated SQL, reducing query runtime by 20% and failure rate by 40%.</li>
               </ul>
             </div>
             <div class="card-block">
-              <h4 class="card-subtitle">Talent profiles pipeline</h4>
-              <p class="card-tags">PySpark · ML · Postgres</p>
+              <h4 class="card-subtitle">Talent Profiles Pipeline</h4>
+              <p class="card-tags">PySpark · ML Models · Postgres</p>
               <ul class="card-list">
-                <li>Engineered big-data ingestion from LinkedIn, Doximity, Google Scholar, and Crunchbase.</li>
-                <li>Optimized ML for entity synonymization and skills prediction; reduced model runtime ~50%.</li>
-                <li>Layered data quality checks across stages; improved reliability from ~60% failure to ~5%.</li>
+                <li>Engineered a big data pipeline ingesting talent profiles from LinkedIn, Doximity, Google Scholar, and Crunchbase.</li>
+                <li>Optimized ML models for entity synonymization and skills prediction, reducing overall model runtime by 50%.</li>
+                <li>Developed multi-layer data quality checks across pipeline stages, proactively catching data issues before customer delivery.</li>
+                <li>Improved pipeline reliability through targeted optimizations, reducing failure rate from 60% to 5% across production runs.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Honeywell -->
+          <article class="card">
+            <header class="card-header">
+              <div>
+                <h3 class="card-title">Honeywell</h3>
+                <p class="card-meta">Backend Engineer · Jul 2022 — Nov 2024</p>
+              </div>
+            </header>
+            <div class="card-block">
+              <h4 class="card-subtitle">IoT Data Contextualization</h4>
+              <p class="card-tags">Neo4j · PySpark · Databricks · Postgres</p>
+              <ul class="card-list">
+                <li>Built scalable ETL pipelines ingesting and contextualizing sensor’s metadata using high-volume IoT metadata and telemetry data.</li>
+                <li>Integrated ML-driven contextualization services replacing legacy rule-based logic, reducing manual intervention by 80%.</li>
+                <li>Optimized Postgres schemas and queries, improving API response latency, scalability, and overall system throughput.</li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4 class="card-subtitle">LLM Based Maintenance Assist</h4>
+              <p class="card-tags">Pgvector · Azure Document Intelligence · Azure Search</p>
+              <ul class="card-list">
+                <li>Developed scalable ingestion and search framework consolidating maintenance documents from multiple heterogeneous sources.</li>
+                <li>Implemented vector search with semantic retrieval methods, boosting accuracy and relevance of chatbot query responses.</li>
+                <li>Designed flexible pluggable architecture integrating parsing and embedding services, supporting future model upgrades.</li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4 class="card-subtitle">Postgres CI/CD Automation</h4>
+              <p class="card-tags">Postgres · Git · Octopus · Bamboo</p>
+              <ul class="card-list">
+                <li>Engineered robust CI/CD pipeline automating schema and procedure version control, reducing manual deployments by 80%.</li>
+                <li>Built change-detection service for tables and procedures, streamlining releases and reducing deployment failures 60%.</li>
+              </ul>
+            </div>
+            <div class="card-block">
+              <h4 class="card-subtitle">Enterprise Analytics</h4>
+              <p class="card-tags">Snowflake · SAP · SFDC · Azure · Fuzzy matching</p>
+              <ul class="card-list">
+                <li>Built dashboards analyzing maintenance by machine and site, identifying high-cost assets, helping reduce expenses 15%.</li>
+                <li>Engineered cloud cost monitoring platform integrating utilization data, preventing over-provisioning and reducing spend by 20%.</li>
+                <li>Engineered fuzzy matching algorithm for entity resolution, improving customer record mapping accuracy across datasets 35%.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- TINO IQ -->
+          <article class="card">
+            <header class="card-header">
+              <div>
+                <h3 class="card-title">TINO IQ</h3>
+                <p class="card-meta">Data Science Intern · May 2020 — Aug 2020</p>
+              </div>
+            </header>
+            <div class="card-block">
+              <h4 class="card-subtitle">Bias Reduction in Predictive Models</h4>
+              <p class="card-tags">Python · Cyclic Boosting · Linear Regression</p>
+              <ul class="card-list">
+                <li>Developed an interpretable model reducing bias compared to linear regression, ensuring fairness and reproducibility in prediction.</li>
+                <li>Implemented boosting algorithm from research paper, improving predictive performance and maintaining transparency in model.</li>
+                <li>Achieved over 10% accuracy improvement by applying cyclic boosting on large-scale datasets with optimized training pipelines.</li>
               </ul>
             </div>
           </article>
@@ -105,11 +170,10 @@
           <h2 class="section-title">Projects</h2>
           <div class="project-grid">
             <article class="project-card">
-              <h3 class="project-title">Grid 2.0 — Flipkart GRiD</h3>
-              <p class="project-tech">Python · CNN · ROS · robotics</p>
+              <h3 class="project-title">Grid 2.0 — Flipkart Hackathon</h3>
+              <p class="project-tech">Python · CNN · Image Recognition · ROS</p>
               <p class="project-desc">
-                Top 1% among 20,000+ teams. CNN-based perception with motion planning for manipulation in a competitive
-                hackathon setting.
+                Ranked in the top 1% among 20,000+ teams, advancing through multiple competitive rounds. Built CNN-powered object detection pipeline with ROS integration, enabling Arm motion planning for accurate manipulation. Designed real-time inference system using RGB-D cameras and feedback control loops.
               </p>
             </article>
             <article class="project-card">
@@ -141,6 +205,10 @@
                 <li>Postgres</li>
                 <li>Databricks</li>
                 <li>Azure Data Factory</li>
+                <li>Neo4j</li>
+                <li>Pgvector</li>
+                <li>Azure Search</li>
+                <li>Snowflake</li>
               </ul>
             </div>
             <div>
@@ -150,8 +218,7 @@
                 IIT Madras · 2018 — 2022
               </p>
               <p class="edu-note">
-                Coursework: pattern recognition &amp; ML, NLP, speech, medical image analysis, linear algebra, differential
-                equations.
+                Coursework: Pattern Recognition &amp; ML, NLP, Speech Technology, Medical Image Analysis, Applied Linear Algebra, Differential Equations.
               </p>
             </div>
           </div>
