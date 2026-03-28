@@ -44,7 +44,7 @@
             <a href="../index.html#experience">← Back to experience</a>
           </p>
           <header class="report-header">
-            <p class="report-context">Draup · SDE 2 · Dec 2024 — Present</p>
+            <p class="report-context">Draup · SDE 2 · Dec 2024 to Present</p>
             <h1 class="report-title">Talent Profiles Pipeline</h1>
             <p class="report-tech">PySpark · ML Models · Postgres</p>
           </header>
@@ -56,10 +56,10 @@
               The pipeline consolidates profiles from LinkedIn, Doximity, Google Scholar, Crunchbase, and related feeds into a unified shape for downstream intelligence products. Ingestion at that scale meant leaning on PySpark for distributed transforms, careful partitioning, and defensive parsing so one bad batch did not poison an entire run.
             </p>
             <p>
-              Entity synonymization and skills prediction were the heaviest ML steps. I profiled bottlenecks in feature prep and inference, then restructured stages and tuned cluster settings until end-to-end model time dropped by about half—without sacrificing the accuracy thresholds product needed for customer-facing views.
+              Entity synonymization and skills prediction were the heaviest ML steps. I profiled bottlenecks in feature prep and inference, then restructured stages and tuned cluster settings until end-to-end model time dropped by about half, without sacrificing the accuracy thresholds product needed for customer-facing views.
             </p>
             <p>
-              Reliability used to be the main pain point: roughly 60% of production runs failed under load or data drift. I added layered validation—schema checks, distributional alerts, and business rules at stage boundaries—so issues surfaced before delivery. Targeted fixes on the flakiest joins and external dependencies brought the failure rate down to about 5%, which made the pipeline something teams could depend on for weekly refreshes.
+              Reliability used to be the main pain point: roughly 60% of production runs failed under load or data drift. I added layered validation (schema checks, distributional alerts, and business rules at stage boundaries) so issues surfaced before delivery. Targeted fixes on the flakiest joins and external dependencies brought the failure rate down to about 5%, which made the pipeline something teams could depend on for weekly refreshes.
             </p>
           </div>
         </div>

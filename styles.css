@@ -1,4 +1,4 @@
-/* Portfolio — GitHub Pages (repo: portfolio) */
+/* Portfolio: GitHub Pages (repo: portfolio) */
 :root {
   --bg: #0c0f14;
   --bg-elevated: #12171f;
@@ -513,6 +513,254 @@ a:hover {
   font-size: 1.125rem;
   line-height: 1.55;
   margin-bottom: 1.5rem;
+}
+
+/* Interactive workflow diagram (project reports) */
+.report-wide {
+  margin-top: 2.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  max-width: 100%;
+}
+
+.report-wide h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 0.35rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.report-wide > .report-sublead {
+  margin: 0 0 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+
+.report-subsection-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 1.75rem 0 0.65rem;
+}
+
+.report-wide h3.report-subsection-title:first-of-type {
+  margin-top: 1rem;
+}
+
+.report-body--inline {
+  margin-bottom: 0;
+}
+
+.report-body--inline p:last-child {
+  margin-bottom: 0;
+}
+
+.report-body code {
+  font-size: 0.9em;
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.workflow-diagram {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.workflow-hint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.workflow-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  margin-bottom: 1.25rem;
+}
+
+.workflow-step {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.workflow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.5rem;
+  min-width: 4.75rem;
+  max-width: 7.5rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--bg-muted);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.workflow-node:hover {
+  background: color-mix(in srgb, var(--accent-soft) 50%, var(--bg-muted));
+  color: var(--text);
+}
+
+.workflow-node:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.workflow-node.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(196, 165, 116, 0.35);
+}
+
+.workflow-node.is-dimmed {
+  opacity: 0.42;
+}
+
+.workflow-node-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.workflow-node.is-active .workflow-node-num {
+  border-color: rgba(196, 165, 116, 0.5);
+  color: var(--accent);
+}
+
+.workflow-arrow {
+  display: flex;
+  align-items: center;
+  padding: 0 0.2rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.workflow-panel {
+  padding: 1rem 1.1rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  min-height: 8rem;
+}
+
+.workflow-panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.workflow-panel p {
+  margin: 0 0 0.65rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.workflow-panel p:last-child {
+  margin-bottom: 0;
+}
+
+.workflow-panel-code {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .workflow-track {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .workflow-step {
+    width: 100%;
+  }
+
+  .workflow-arrow {
+    justify-content: center;
+    padding: 0.15rem 0;
+    transform: rotate(90deg);
+  }
+
+  .workflow-node {
+    max-width: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-node {
+    transition: none;
+  }
+}
+
+/* Demo videos on project report pages */
+.report-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.report-video {
+  margin: 0;
+}
+
+.report-video video {
+  width: 100%;
+  max-height: min(420px, 55vh);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  vertical-align: middle;
+}
+
+.report-video figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
 .split {

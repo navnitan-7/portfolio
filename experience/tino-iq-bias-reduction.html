@@ -44,7 +44,7 @@
             <a href="../index.html#experience">← Back to experience</a>
           </p>
           <header class="report-header">
-            <p class="report-context">TINO IQ · Data Science Intern · May 2020 — Aug 2020</p>
+            <p class="report-context">TINO IQ · Data Science Intern · May 2020 to Aug 2020</p>
             <h1 class="report-title">Cyclic Boosting for interpretable tabular models</h1>
             <p class="report-tech">
               Python · NumPy ·
@@ -54,7 +54,7 @@
           <div class="report-body">
             <p class="lead-summary">
               I reproduced the <strong>Cyclic Boosting</strong> algorithm from Felix Wick, Ulrich Kerzel, and Michael Feindt,
-              <cite>Cyclic Boosting — an explainable supervised machine learning algorithm</cite> (<a href="https://arxiv.org/abs/2002.03425" target="_blank" rel="noopener noreferrer">arXiv:2002.03425</a>; originally ICMLA 2019). The method builds an additive supervised model by cycling over dimensions so individual predictions stay traceable—addressing the paper’s goal of accuracy without the black-box behavior of typical deep or ensemble stacks.
+              <cite>Cyclic Boosting - an explainable supervised machine learning algorithm</cite> (<a href="https://arxiv.org/abs/2002.03425" target="_blank" rel="noopener noreferrer">arXiv:2002.03425</a>; originally ICMLA 2019). The method builds an additive supervised model by cycling over dimensions so individual predictions stay traceable addressing the paper’s goal of accuracy without the black-box behavior of typical deep or ensemble stacks.
             </p>
             <p>
               At TINO IQ the business question was tabular prediction where stakeholders still needed to see how inputs drive outputs, including situations where opaque scores complicate fairness review. An ordinary linear regression pipeline was the natural baseline: quick to ship but shallow for interaction structure and harder to extend when accuracy stalled.
@@ -63,7 +63,7 @@
               I translated the paper’s cyclic fitting recipe into a NumPy-first Python trainer: successive rounds update dimension-wise (weak) contributions while preserving the separable additive form described in the paper. That kept the implementation aligned with the published procedure rather than a hand-wavy “boosted linear” sketch.
             </p>
             <p>
-              On the company’s prepared tabular datasets—same splits and evaluation protocol as the linear baseline—the Cyclic Boosting model improved accuracy by more than 10%. Training code used vectorized routines and batched updates so we could afford hyperparameter sweeps and ablations on internship timelines.
+              On the company’s prepared tabular datasets same splits and evaluation protocol as the linear baseline the Cyclic Boosting model improved accuracy by more than 10%. Training code used vectorized routines and batched updates so we could afford hyperparameter sweeps and ablations on internship timelines.
             </p>
           </div>
         </div>

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Grid 2.0 — Flipkart Hackathon: CNN perception, ROS, and robotic manipulation. By Navnitan SV."
+      content="Grid 2.0 · Flipkart Hackathon: CNN perception, ROS, and robotic manipulation. By Navnitan SV."
     />
-    <title>Grid 2.0 — Flipkart Hackathon · Navnitan SV</title>
+    <title>Grid 2.0 · Flipkart Hackathon · Navnitan SV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -44,8 +44,16 @@
             <a href="../index.html#projects">← Back to projects</a>
           </p>
           <header class="report-header">
-            <h1 class="report-title">Grid 2.0 — Flipkart Hackathon</h1>
-            <p class="report-tech">Python · CNN · Image Recognition · ROS</p>
+            <h1 class="report-title">Grid 2.0 · Flipkart Hackathon</h1>
+            <p class="report-tech">
+              Python · YOLO · OpenCV · ROS · Arduino ·
+              <a
+                href="https://github.com/ilan-1/GRiD2.0-i-arm"
+                target="_blank"
+                rel="noopener noreferrer"
+                >CV stack on GitHub</a
+              >
+            </p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
@@ -55,12 +63,70 @@
               Grid 2.0 was a Flipkart-sponsored hackathon focused on autonomous manipulation: teams progressed through several elimination rounds, and our entry finished in the top 1% out of more than twenty thousand.
             </p>
             <p>
-              I worked on the perception and execution stack in Python. We used a convolutional network for object detection and classification on camera frames, exposed results through ROS so planning nodes could subscribe to stable object poses in the robot frame.
+              I worked on the perception and execution stack in Python. We used a YOLO-style detector on camera frames, exposed results through ROS so planning nodes could subscribe to stable object poses in the robot frame, and drove the arm over serial through Arduino firmware.
             </p>
             <p>
-              On the robot side, RGB-D sensors fed the detector; arm motion was planned using that feedback so grasps stayed aligned as the scene changed. The emphasis was on low-latency inference and closed-loop corrections rather than a single open-loop plan—so the arm could adjust as detection noise and lighting varied.
+              On the robot side, RGB-D sensors fed the detector; arm motion was planned using that feedback so grasps stayed aligned as the scene changed. The emphasis was on low-latency inference and closed-loop corrections rather than a single open-loop plan, so the arm could adjust as detection noise and lighting varied.
+            </p>
+            <p>
+              The computer-vision and arm-integration layout we used is reflected in the open reference implementation
+              <a href="https://github.com/ilan-1/GRiD2.0-i-arm" target="_blank" rel="noopener noreferrer">ilan-1/GRiD2.0-i-arm</a>
+              (YOLO detector node, OpenCV paths, Python motion scripts, and Arduino control).
             </p>
           </div>
+
+          <section class="report-wide" aria-labelledby="grid20-deep-heading">
+            <h2 id="grid20-deep-heading">Perception-to-manipulation pipeline</h2>
+            <p class="report-sublead">
+              End-to-end flow from sensor frames to arm motion, aligned with the modules in
+              <a href="https://github.com/ilan-1/GRiD2.0-i-arm" target="_blank" rel="noopener noreferrer">GRiD2.0-i-arm</a>.
+            </p>
+
+            <h3 class="report-subsection-title" id="grid20-workflow-heading">Interactive workflow</h3>
+            <p class="workflow-hint">Click a stage to highlight it in the flow and read what it does. Keyboard: Tab to focus, arrow keys to move between stages.</p>
+            <div class="workflow-diagram" id="grid20-workflow">
+              <div class="workflow-track" role="tablist" aria-label="Grid 2.0 perception and control stages"></div>
+              <div
+                class="workflow-panel"
+                role="tabpanel"
+                id="grid20-workflow-panel"
+                aria-labelledby="grid20-workflow-heading"
+                tabindex="0"
+              >
+                <h3 id="grid20-workflow-panel-title">Pipeline stage</h3>
+                <p id="grid20-workflow-panel-body"></p>
+                <p class="workflow-panel-code" id="grid20-workflow-panel-code"></p>
+              </div>
+            </div>
+
+            <h3 class="report-subsection-title" id="grid20-videos-heading">Demos</h3>
+            <p class="report-body report-body--inline">
+              Recordings from the hackathon build (simulation and hardware pick). Hosted alongside the portfolio for playback on GitHub Pages.
+            </p>
+            <div class="report-video-grid" role="group" aria-labelledby="grid20-videos-heading">
+              <figure class="report-video">
+                <video controls playsinline preload="metadata">
+                  <source src="media/grid-2/arm_sim5.mp4" type="video/mp4" />
+                  Your browser does not support embedded video.
+                </video>
+                <figcaption>Arm simulation run, intermediate milestone.</figcaption>
+              </figure>
+              <figure class="report-video">
+                <video controls playsinline preload="metadata">
+                  <source src="media/grid-2/arm_sim12.mp4" type="video/mp4" />
+                  Your browser does not support embedded video.
+                </video>
+                <figcaption>Arm simulation, later control iteration.</figcaption>
+              </figure>
+              <figure class="report-video">
+                <video controls playsinline preload="metadata">
+                  <source src="media/grid-2/pick.mp4" type="video/mp4" />
+                  Your browser does not support embedded video.
+                </video>
+                <figcaption>Physical pick: detector, planner, and arm on target objects.</figcaption>
+              </figure>
+            </div>
+          </section>
         </div>
       </article>
     </main>
@@ -88,6 +154,137 @@
           toggle.setAttribute("aria-label", "Open menu");
         });
       });
+
+      (function () {
+        var stages = [
+          {
+            short: "Capture",
+            title: "Sensor → image pipeline",
+            body:
+              "Camera / RGB-D frames enter through the C image interface and OpenCV helpers so every downstream stage sees a consistent buffer format, color space, and timing. This isolates hardware quirks from the detector.",
+            code: "image_interface.c · open_cv/",
+          },
+          {
+            short: "YOLO",
+            title: "Object detection (CNN)",
+            body:
+              "A YOLO-style convnet scores bounding boxes and classes on each frame. The goal is reliable labels and 2D regions fast enough for closed-loop control, not offline batch accuracy.",
+            code: "YoloObjectDetector.cpp",
+          },
+          {
+            short: "ROS",
+            title: "Perception ROS node",
+            body:
+              "The detector is wrapped as a ROS node that publishes detections (poses or image-frame boxes plus metadata). Planners and Python tooling subscribe instead of polling files or shared memory ad hoc.",
+            code: "yolo_object_detector_node.cpp",
+          },
+          {
+            short: "Plan",
+            title: "Move toward the target",
+            body:
+              "Python scripts translate detections into motion goals: which object to approach, safety limits, and intermediate waypoints. This is where competition rules and workspace geometry get encoded.",
+            code: "moveto_object.py · c.py",
+          },
+          {
+            short: "Arduino",
+            title: "Low-level arm actuation",
+            body:
+              "Joint commands stream to an Arduino sketch that drives servos or motor drivers with deterministic timing. It keeps the real-time loop out of the heavy laptop stack.",
+            code: "Ardscr.ino",
+          },
+          {
+            short: "Loop",
+            title: "Closed-loop correction",
+            body:
+              "Fresh frames re-run detection while the arm moves, so pose error from lighting or slip triggers small replans instead of a single blind trajectory. That is what made the demos robust in changing conditions.",
+            code: "ROS graph + Python ↔ serial",
+          },
+        ];
+
+        var root = document.getElementById("grid20-workflow");
+        if (!root) return;
+
+        var track = root.querySelector(".workflow-track");
+        var panel = document.getElementById("grid20-workflow-panel");
+        var panelTitle = document.getElementById("grid20-workflow-panel-title");
+        var panelBody = document.getElementById("grid20-workflow-panel-body");
+        var panelCode = document.getElementById("grid20-workflow-panel-code");
+        var tabs = [];
+
+        function selectIndex(i) {
+          if (i < 0 || i >= stages.length) return;
+          for (var j = 0; j < tabs.length; j++) {
+            var on = j === i;
+            tabs[j].setAttribute("aria-selected", on ? "true" : "false");
+            tabs[j].classList.toggle("is-active", on);
+            tabs[j].tabIndex = on ? 0 : -1;
+          }
+          var s = stages[i];
+          panelTitle.textContent = s.title;
+          panelBody.textContent = s.body;
+          panelCode.textContent = s.code;
+          panel.setAttribute("aria-labelledby", tabs[i].id);
+        }
+
+        stages.forEach(function (stage, i) {
+          var step = document.createElement("div");
+          step.className = "workflow-step";
+
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "workflow-node";
+          btn.setAttribute("role", "tab");
+          btn.id = "grid20-workflow-tab-" + i;
+          btn.setAttribute("aria-controls", "grid20-workflow-panel");
+          btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+          btn.tabIndex = i === 0 ? 0 : -1;
+
+          var num = document.createElement("span");
+          num.className = "workflow-node-num";
+          num.setAttribute("aria-hidden", "true");
+          num.textContent = String(i + 1);
+
+          var label = document.createElement("span");
+          label.textContent = stage.short;
+
+          btn.appendChild(num);
+          btn.appendChild(label);
+          btn.addEventListener("click", function () {
+            selectIndex(i);
+          });
+
+          step.appendChild(btn);
+          track.appendChild(step);
+
+          if (i < stages.length - 1) {
+            var arrow = document.createElement("span");
+            arrow.className = "workflow-arrow";
+            arrow.setAttribute("aria-hidden", "true");
+            arrow.textContent = "→";
+            track.appendChild(arrow);
+          }
+
+          tabs.push(btn);
+        });
+
+        track.addEventListener("keydown", function (e) {
+          var ix = tabs.indexOf(document.activeElement);
+          if (ix < 0) return;
+          var next = ix;
+          if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            next = Math.min(stages.length - 1, ix + 1);
+          } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            next = Math.max(0, ix - 1);
+          } else {
+            return;
+          }
+          e.preventDefault();
+          selectIndex(next);
+          tabs[next].focus();
+        });
+
+        selectIndex(0);
+      })();
     </script>
   </body>
 </html>

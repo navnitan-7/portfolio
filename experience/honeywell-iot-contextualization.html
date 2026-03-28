@@ -44,7 +44,7 @@
             <a href="../index.html#experience">← Back to experience</a>
           </p>
           <header class="report-header">
-            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 to Nov 2024</p>
             <h1 class="report-title">IoT Data Contextualization</h1>
             <p class="report-tech">Neo4j · PySpark · Databricks · Postgres</p>
           </header>
@@ -53,13 +53,13 @@
               I built ETL on Databricks and Neo4j that ingested very large IoT metadata and telemetry streams and turned them into contextualized views downstream teams could query. Replacing brittle rules with ML-based contextualization removed most manual triage, and tightening Postgres schemas and hot-path queries improved API latency and throughput for the services on top.
             </p>
             <p>
-              Industrial IoT generates enormous volumes of sensor metadata and time-series telemetry; the hard part is not storage but attaching the right context—asset lineage, site hierarchy, relationships between devices—so applications can query a coherent graph of “what this device is” rather than raw identifiers.
+              Industrial IoT generates enormous volumes of sensor metadata and time-series telemetry; the hard part is not storage but attaching the right context (asset lineage, site hierarchy, relationships between devices) so applications can query a coherent graph of “what this device is” rather than raw identifiers.
             </p>
             <p>
               I implemented scalable ETL in PySpark on Databricks to land and transform those feeds, then modeled relationships in Neo4j for traversals and enrichment that would have been painful in purely relational form. Where the organization had relied on hand-maintained rules, I integrated ML-driven contextualization services that learned patterns from historical resolutions, cutting manual intervention by roughly 80% for the noisiest classes of ambiguity.
             </p>
             <p>
-              Serving APIs still sat on Postgres for transactional reads. I redesigned several hot schemas and rewrote pathological queries so the contextualized views responded within SLOs as fan-out grew—improving latency, scalability, and overall throughput for the teams building customer dashboards and workflows on top.
+              Serving APIs still sat on Postgres for transactional reads. I redesigned several hot schemas and rewrote pathological queries so the contextualized views responded within SLOs as fan-out grew, improving latency, scalability, and overall throughput for the teams building customer dashboards and workflows on top.
             </p>
           </div>
         </div>

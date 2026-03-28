@@ -44,19 +44,19 @@
             <a href="../index.html#experience">← Back to experience</a>
           </p>
           <header class="report-header">
-            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 to Nov 2024</p>
             <h1 class="report-title">LLM Based Maintenance Assist</h1>
             <p class="report-tech">Pgvector · Azure Document Intelligence · Azure Search</p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I designed an ingestion and retrieval stack that pulled maintenance documents from many formats and systems into a single searchable layer, using Azure Document Intelligence, embeddings in pgvector, and semantic search so a maintenance assistant could answer with grounded context. The pipeline was modular—parsers and embedders plug in—so we could swap models without rewriting the core flow.
+              I designed an ingestion and retrieval stack that pulled maintenance documents from many formats and systems into a single searchable layer, using Azure Document Intelligence, embeddings in pgvector, and semantic search so a maintenance assistant could answer with grounded context. The pipeline was modular: parsers and embedders plug in, so we could swap models without rewriting the core flow.
             </p>
             <p>
               Maintenance knowledge was scattered across PDFs, scans, legacy CMMS exports, and vendor bulletins. I built an ingestion framework that normalizes those heterogeneous sources: layout-aware extraction with Azure Document Intelligence, chunking tuned for procedure boundaries, and metadata that preserved document type and equipment tags for filtering.
             </p>
             <p>
-              For retrieval we combined vector search—embeddings stored in Postgres with pgvector—with semantic ranking in Azure Cognitive Search so technicians got passages that matched intent, not just keywords. That materially improved precision and recall for chatbot-style queries compared with our earlier lexical-only baseline.
+              For retrieval we combined vector search (embeddings stored in Postgres with pgvector) with semantic ranking in Azure Cognitive Search so technicians got passages that matched intent, not just keywords. That materially improved precision and recall for chatbot-style queries compared with our earlier lexical-only baseline.
             </p>
             <p>
               The architecture was deliberately pluggable: parsers, embedders, and the search backend communicate through small interfaces, which made it practical to trial new embedding models or routing strategies without a rewrite. That mattered because the LLM landscape was moving quickly and we needed upgrade paths without stopping shipping features.

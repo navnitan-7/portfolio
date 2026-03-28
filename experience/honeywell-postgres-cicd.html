@@ -44,7 +44,7 @@
             <a href="../index.html#experience">← Back to experience</a>
           </p>
           <header class="report-header">
-            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 to Nov 2024</p>
             <h1 class="report-title">Postgres CI/CD Automation</h1>
             <p class="report-tech">Postgres · Git · Octopus · Bamboo</p>
           </header>
@@ -53,13 +53,13 @@
               I automated how database schema and stored procedures moved from Git to production through Octopus and Bamboo, with change detection for tables and procedures so releases stayed small and reviewable. That cut manual DB deployment work sharply and removed a large share of rollback-prone releases.
             </p>
             <p>
-              Before automation, schema drift and hand-applied hotfixes made releases risky: it was hard to prove what had run in which environment, and rollbacks were expensive. I built a CI/CD path that treats Postgres artifacts like application code—versioned in Git, built in Bamboo, and promoted through Octopus with explicit approval gates.
+              Before automation, schema drift and hand-applied hotfixes made releases risky: it was hard to prove what had run in which environment, and rollbacks were expensive. I built a CI/CD path that treats Postgres artifacts like application code: versioned in Git, built in Bamboo, and promoted through Octopus with explicit approval gates.
             </p>
             <p>
               The differentiator was a change-detection service that diffs declared tables and procedures against what was already deployed, generating migration scripts only for real deltas. That reduced accidental full redeploys, made code review focused, and cut deployment failures by roughly 60% because fewer partial or conflicting changes reached production.
             </p>
             <p>
-              Together, these practices reduced manual database deployments by about 80% in terms of engineer-hours per release—freeing the team to prioritize correctness and performance instead of copy-paste execution in SQL clients.
+              Together, these practices reduced manual database deployments by about 80% in terms of engineer-hours per release, freeing the team to prioritize correctness and performance instead of copy-paste execution in SQL clients.
             </p>
           </div>
         </div>
