@@ -46,37 +46,39 @@
           <header class="report-header">
             <h1 class="report-title">Grid 2.0 · Flipkart Hackathon</h1>
             <p class="report-tech">
-              Python · YOLO · OpenCV · ROS · Arduino ·
+              Python · YOLO · OpenCV · ROS · Arduino · Team X ·
               <a
                 href="https://github.com/ilan-1/GRiD2.0-i-arm"
                 target="_blank"
                 rel="noopener noreferrer"
                 >CV stack on GitHub</a
               >
+              ·
+              <a href="grid-2-participation-certificate.html">Participation certificate (PDF)</a>
             </p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              Top 1% among 20k+ teams in a multi-round robotics hackathon: CNN-based perception with ROS and real-time control for pick-and-place with a robotic arm.
+              Top 1% among 20k+ teams in a multi-round robotics hackathon: CNN-based perception with ROS and real-time control for pick and place with a robotic arm. IIT Madras competed as Team X.
             </p>
             <p>
-              Grid 2.0 was a Flipkart-sponsored hackathon focused on autonomous manipulation: teams progressed through several elimination rounds, and our entry finished in the top 1% out of more than twenty thousand.
+              Grid 2.0 was a Flipkart-sponsored hackathon focused on autonomous manipulation: teams progressed through several elimination rounds, and our entry as Team X finished in the top 1% out of more than twenty thousand.
             </p>
             <p>
               I worked on the perception and execution stack in Python. We used a YOLO-style detector on camera frames, exposed results through ROS so planning nodes could subscribe to stable object poses in the robot frame, and drove the arm over serial through Arduino firmware.
             </p>
             <p>
-              On the robot side, RGB-D sensors fed the detector; arm motion was planned using that feedback so grasps stayed aligned as the scene changed. The emphasis was on low-latency inference and closed-loop corrections rather than a single open-loop plan, so the arm could adjust as detection noise and lighting varied.
+              On the robot side, RGB-D sensors fed the detector; arm motion was planned using that feedback so grasps stayed aligned as the scene changed. The emphasis was on low latency inference and closed loop corrections rather than a single open loop plan, so the arm could adjust as detection noise and lighting varied.
             </p>
             <p>
-              The computer-vision and arm-integration layout we used is reflected in the open reference implementation
+              The computer vision and arm integration layout we used is reflected in the open reference implementation
               <a href="https://github.com/ilan-1/GRiD2.0-i-arm" target="_blank" rel="noopener noreferrer">ilan-1/GRiD2.0-i-arm</a>
               (YOLO detector node, OpenCV paths, Python motion scripts, and Arduino control).
             </p>
           </div>
 
           <section class="report-wide" aria-labelledby="grid20-deep-heading">
-            <h2 id="grid20-deep-heading">Perception-to-manipulation pipeline</h2>
+            <h2 id="grid20-deep-heading">Perception and manipulation pipeline</h2>
             <p class="report-sublead">
               End-to-end flow from sensor frames to arm motion, aligned with the modules in
               <a href="https://github.com/ilan-1/GRiD2.0-i-arm" target="_blank" rel="noopener noreferrer">GRiD2.0-i-arm</a>.
@@ -175,7 +177,7 @@
             short: "ROS",
             title: "Perception ROS node",
             body:
-              "The detector is wrapped as a ROS node that publishes detections (poses or image-frame boxes plus metadata). Planners and Python tooling subscribe instead of polling files or shared memory ad hoc.",
+              "The detector is wrapped as a ROS node that publishes detections (poses or image frame boxes plus metadata). Planners and Python tooling subscribe instead of polling files or shared memory ad hoc.",
             code: "yolo_object_detector_node.cpp",
           },
           {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Enterprise analytics at Honeywell: Snowflake, maintenance dashboards, cloud cost monitoring, fuzzy entity matching. Navnitan SV."
+      content="Honeywell enterprise analytics: Salesforce-to-lake maintenance data model, multi-source cloud cost pipelines, spend optimization insights. Navnitan SV."
     />
     <title>Enterprise Analytics · Honeywell · Navnitan SV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,22 +46,208 @@
           <header class="report-header">
             <p class="report-context">Honeywell · Backend Engineer · Jul 2022 to Nov 2024</p>
             <h1 class="report-title">Enterprise Analytics</h1>
-            <p class="report-tech">Snowflake · SAP · SFDC · Azure · Fuzzy matching</p>
+            <p class="report-tech">Snowflake · Data lake · Salesforce · Azure · AWS · Prometheus · Fuzzy matching</p>
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I delivered analytics that tied Snowflake, SAP, Salesforce, and Azure usage data to operational outcomes: maintenance dashboards by asset and site surfaced cost drivers, and a utilization-based cloud cost monitor helped rein in waste. I also shipped fuzzy entity matching that materially improved how customer records lined up across systems.
+              I owned end-to-end data workflows for two high-impact programs: a maintenance analytics stack that harmonized more than eighty Salesforce tables into a lake-backed model for stakeholders, and a multi-cloud cost intelligence pipeline that fused billing APIs with operational telemetry for spend optimization. I also shipped fuzzy entity resolution so customer and asset identities lined up consistently across SAP, Salesforce, and internal stores.
             </p>
             <p>
-              For maintenance and reliability stakeholders, I built dashboards that slice spend and downtime by machine, line, and site, making it obvious which assets were driving the largest share of work orders and spare-part cost. That visibility supported a roughly 15% reduction in avoidable maintenance expense by prioritizing the right interventions.
-            </p>
-            <p>
-              Separately, I engineered a cloud cost monitoring platform that joins utilization signals from Azure and related sources with contract and allocation metadata. The goal was to catch over-provisioning and orphaned resources before they appear on the invoice; in practice the organization reduced relevant cloud spend by about 20% in the tracked environments.
-            </p>
-            <p>
-              Customer and asset identity is fragmented across SAP, Salesforce, and custom databases. I implemented a fuzzy matching pipeline for entity resolution (tuned thresholds, blocking keys, and human-review queues for edge cases) that lifted mapping accuracy across key datasets by approximately 35%, which downstream reporting and integrations depended on.
+              Across both programs the pattern was the same in the abstract: many heterogeneous sources, a governed landing and modeling zone, then curated outputs tuned for decisions: not a single straight line, but fan-in, parallel refinement, and fan-out to the right consumers.
             </p>
           </div>
+
+          <section class="report-wide" aria-labelledby="maint-title">
+            <h2 id="maint-title">Maintenance stakeholder program</h2>
+            <p class="report-sublead">
+              Salesforce-heavy operational truth, modeled for asset, site, and work-order analytics in the data lake.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                Reliability and maintenance leaders needed a single place to reason about work orders, assets, parts, service contracts, and account context without clicking through dozens of Salesforce objects. I designed a data workflow that extracted and loaded relational data from <strong>more than eighty Salesforce tables</strong> (object families spanning cases, installed assets, inventory, and related dimensions) into the <strong>data lake</strong> with incremental patterns suited to large, evolving schemas.
+              </p>
+              <p>
+                <strong>Preprocessing</strong> focused on consistency: keys that align entities across objects, handling of slowly changing attributes, null and duplicate policies, and joins that respect Salesforce’s implicit relationships once data left the UI. <strong>Post-processing</strong> layered business-ready aggregates and KPIs: cost and effort by machine, line, and site, SLA-oriented views, and slices that made the biggest maintenance spend drivers obvious. That end-to-end model fed dashboards and downstream consumers so stakeholders saw <strong>insightful, decision-grade</strong> data rather than raw extracts.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Dataflow: many Salesforce domains converge through ingestion into the lake, branch through parallel preprocessing workstreams, merge into a curated maintenance model, then fan out to reporting and integrations.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" aria-labelledby="maint-flow-title maint-flow-desc">
+                  <title id="maint-flow-title">Maintenance analytics dataflow</title>
+                  <desc id="maint-flow-desc">
+                    Multiple Salesforce table groups connect to extract and load, then data lake, parallel preprocessing paths, curated model, post-processing, and multiple consumer channels.
+                  </desc>
+                  <defs>
+                    <marker id="m-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="538" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <!-- Sources -->
+                  <rect x="32" y="28" width="168" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="116" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Work orders &amp; cases</text>
+                  <rect x="220" y="28" width="168" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="304" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Assets &amp; sites</text>
+                  <rect x="408" y="28" width="168" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="492" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Parts &amp; inventory</text>
+                  <rect x="596" y="28" width="168" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="680" y="52" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Accounts + 76+ objects</text>
+                  <!-- Ingest -->
+                  <rect x="318" y="108" width="284" height="44" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="128" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Extract · incremental load · CDC-aware ingest</text>
+                  <text x="460" y="144" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">80+ Salesforce tables</text>
+                  <!-- Arrows sources to ingest -->
+                  <line x1="116" y1="68" x2="400" y2="108" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <line x1="304" y1="68" x2="430" y2="108" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <line x1="492" y1="68" x2="460" y2="108" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <line x1="680" y1="68" x2="520" y2="108" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <!-- Lake -->
+                  <rect x="298" y="188" width="324" height="48" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="212" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Data lake · landing &amp; raw history</text>
+                  <text x="460" y="228" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Durable store for replay, audit, and model evolution</text>
+                  <line x1="460" y1="152" x2="460" y2="188" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <!-- Parallel preprocessing -->
+                  <rect x="48" y="288" width="200" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="148" y="310" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Preprocess: keys &amp;</text>
+                  <text x="148" y="326" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">cross-object joins</text>
+                  <rect x="360" y="288" width="200" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="310" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Preprocess: quality &amp;</text>
+                  <text x="460" y="326" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">SCD · timelines</text>
+                  <rect x="672" y="288" width="200" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="772" y="310" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Preprocess: reference</text>
+                  <text x="772" y="326" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">data &amp; hierarchies</text>
+                  <path d="M 380 236 L 148 288" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#m-arr)" />
+                  <line x1="460" y1="236" x2="460" y2="288" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <path d="M 540 236 L 772 288" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#m-arr)" />
+                  <!-- Curated model -->
+                  <rect x="338" y="378" width="244" height="44" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="404" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Curated maintenance data model</text>
+                  <line x1="148" y1="340" x2="400" y2="378" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <line x1="460" y1="340" x2="460" y2="378" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <line x1="772" y1="340" x2="520" y2="378" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <!-- Post + consumers -->
+                  <rect x="368" y="448" width="184" height="36" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="470" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Post-process · KPIs &amp; rollups</text>
+                  <line x1="460" y1="422" x2="460" y2="448" stroke="#6b7380" stroke-width="1.2" marker-end="url(#m-arr)" />
+                  <rect x="120" y="502" width="140" height="32" rx="6" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="190" y="522" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Dashboards</text>
+                  <rect x="390" y="502" width="140" height="32" rx="6" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="460" y="522" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Self-serve BI</text>
+                  <rect x="660" y="502" width="140" height="32" rx="6" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="730" y="522" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Downstream apps</text>
+                  <path d="M 420 484 L 190 502" stroke="#6b7380" stroke-width="1" fill="none" marker-end="url(#m-arr)" />
+                  <line x1="460" y1="484" x2="460" y2="502" stroke="#6b7380" stroke-width="1" marker-end="url(#m-arr)" />
+                  <path d="M 500 484 L 730 502" stroke="#6b7380" stroke-width="1" fill="none" marker-end="url(#m-arr)" />
+                </svg>
+              </div>
+            </figure>
+            <div class="report-body">
+              <p>
+                The diagram is intentionally non-linear: the lake is a shared hub, preprocessing runs as <strong>parallel workstreams</strong> (keys and joins, quality and slowly changing history, reference hierarchies) before the model merges them, and post-processing feeds <strong>several channels</strong> at once. That structure kept schema churn in Salesforce from breaking one fragile chain and let us extend new objects without rewiring the entire path. Stakeholder visibility into cost and downtime drivers contributed to roughly a <strong>15% reduction</strong> in avoidable maintenance expense by focusing interventions where the data said they mattered.
+              </p>
+            </div>
+          </section>
+
+          <section class="report-wide" aria-labelledby="cost-title">
+            <h2 id="cost-title">Cloud cost monitoring &amp; spend optimization</h2>
+            <p class="report-sublead">
+              Billing APIs plus operational context from Azure Resource Graph and Prometheus-style utilization signals.
+            </p>
+            <div class="report-body report-body--inline">
+              <p>
+                Finance and platform teams needed more than invoice exports: they needed <strong>why</strong> spend moved and <strong>what</strong> to right-size or retire. I built a pipeline that pulled cost and usage from the <strong>Azure Cost Management API</strong> and <strong>AWS cost APIs</strong>, then enriched that spine with <strong>operational metadata from Azure Resource Graph</strong> (resource topology, tags, SKUs, ownership) and <strong>utilization and health signals sourced from Prometheus-backed dashboards</strong> so utilization was comparable to cost in the same analytical grain.
+              </p>
+              <p>
+                Normalization aligned currencies, billing periods, and account structures across clouds before joins. The combined layer supported <strong>spend optimization insights</strong>: underused clusters, orphaned disks, mismatched reservation coverage, and slices that tied technical owners to dollars. Outputs were tuned for both executive rollups and engineering drill-downs.
+              </p>
+            </div>
+            <figure class="dataflow-figure">
+              <figcaption>
+                Dataflow: parallel billing and operations sources share ingest and normalization, then spend facts meet Resource Graph and Prometheus-derived utilization in one enrichment stage before optimization insights fan out to dashboards and alerts.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 518" xmlns="http://www.w3.org/2000/svg" aria-labelledby="cost-flow-title cost-flow-desc">
+                  <title id="cost-flow-title">Cloud cost and spend optimization dataflow</title>
+                  <desc id="cost-flow-desc">
+                    Azure cost, AWS cost, Azure Resource Graph, and Prometheus metrics converge through ingest and normalization, then unified spend, enrichment join, optimization insights, and fan-out to dashboards and alerts.
+                  </desc>
+                  <defs>
+                    <marker id="c-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="516" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <!-- Four sources -->
+                  <rect x="40" y="32" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="134" y="58" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Azure Cost Management API</text>
+                  <rect x="258" y="32" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="352" y="58" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">AWS billing &amp; cost APIs</text>
+                  <rect x="476" y="32" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="570" y="58" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Azure Resource Graph</text>
+                  <rect x="694" y="32" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="788" y="58" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Prometheus / dashboard metrics</text>
+                  <!-- Ingest hub -->
+                  <rect x="278" y="118" width="364" height="48" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="140" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Ingest · schedule · idempotent loads</text>
+                  <text x="460" y="156" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Separate connectors per source; shared monitoring</text>
+                  <line x1="134" y1="76" x2="340" y2="118" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <line x1="352" y1="76" x2="400" y2="118" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <line x1="570" y1="76" x2="480" y2="118" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <line x1="788" y1="76" x2="580" y2="118" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <!-- Normalize -->
+                  <rect x="318" y="198" width="284" height="40" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="222" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Normalize · currency · period alignment · cloud-agnostic grain</text>
+                  <line x1="460" y1="166" x2="460" y2="198" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <!-- Unified spend -->
+                  <rect x="308" y="262" width="304" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="288" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Unified multi-cloud spend &amp; usage facts</text>
+                  <line x1="460" y1="238" x2="460" y2="262" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <!-- Enrichment: ARG + Prometheus land in ingest but merge analytically here -->
+                  <rect x="218" y="318" width="484" height="52" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="340" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Enrich spend facts with operational context</text>
+                  <text x="460" y="356" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Azure Resource Graph (IDs, tags, SKUs, ownership) + Prometheus / dashboard utilization on shared keys</text>
+                  <line x1="460" y1="306" x2="460" y2="318" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <path d="M 570 76 L 570 200 L 520 318" stroke="#6b7380" stroke-width="1" fill="none" opacity="0.55" />
+                  <path d="M 788 76 L 788 200 L 600 318" stroke="#6b7380" stroke-width="1" fill="none" opacity="0.55" />
+                  <text x="688" y="268" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">ARG &amp; metrics</text>
+                  <text x="688" y="282" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">feed this join after ingest</text>
+                  <!-- Insights -->
+                  <rect x="288" y="394" width="344" height="44" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="414" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Spend optimization insight layer</text>
+                  <text x="460" y="430" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Right-sizing · waste · coverage · owner accountability</text>
+                  <line x1="460" y1="370" x2="460" y2="394" stroke="#6b7380" stroke-width="1.2" marker-end="url(#c-arr)" />
+                  <!-- Fan-out -->
+                  <rect x="108" y="462" width="168" height="36" rx="8" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="192" y="484" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Executive dashboards</text>
+                  <rect x="376" y="462" width="168" height="36" rx="8" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="460" y="484" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Chargeback &amp; drill-downs</text>
+                  <rect x="644" y="462" width="168" height="36" rx="8" fill="#181e29" stroke="#6b7380" stroke-width="1" />
+                  <text x="728" y="484" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Alerts &amp; automation hooks</text>
+                  <path d="M 400 438 L 192 462" stroke="#6b7380" stroke-width="1" fill="none" marker-end="url(#c-arr)" />
+                  <line x1="460" y1="438" x2="460" y2="462" stroke="#6b7380" stroke-width="1" marker-end="url(#c-arr)" />
+                  <path d="M 520 438 L 728 462" stroke="#6b7380" stroke-width="1" fill="none" marker-end="url(#c-arr)" />
+                </svg>
+              </div>
+            </figure>
+            <div class="report-body">
+              <p>
+                Here the non-linearity is the <strong>multi-source ingest</strong> plus an explicit <strong>enrichment stage</strong>: after a unified spend core, Resource Graph attributes and Prometheus-backed utilization series merge on shared resource keys so dollars and usage stay comparable. That is what makes “optimization” defensible. Tracked environments saw roughly a <strong>20% reduction</strong> in relevant cloud spend once waste and mis-provisioning were visible early.
+              </p>
+            </div>
+          </section>
+
+          <section class="report-wide" aria-labelledby="fuzzy-title">
+            <h2 id="fuzzy-title">Entity resolution (cross-system)</h2>
+            <p class="report-sublead">Fuzzy matching across SAP, Salesforce, and internal databases.</p>
+            <div class="report-body">
+              <p>
+                Customer and asset identity stayed fragmented across SAP, Salesforce, and custom databases. I implemented a fuzzy matching pipeline for entity resolution (blocking keys, tuned similarity thresholds, and human-review queues for edge cases) that improved mapping accuracy on key datasets by approximately <strong>35%</strong>, which downstream reporting and both programs above depended on for consistent rollups.
+              </p>
+            </div>
+          </section>
         </div>
       </article>
     </main>

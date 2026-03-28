@@ -735,6 +735,31 @@ a:hover {
   }
 }
 
+/* Non-linear dataflow figures (SVG hub / fan-in / fan-out) */
+.dataflow-figure {
+  margin: 1.35rem 0 0;
+}
+
+.dataflow-figure figcaption {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.85rem;
+}
+
+.workflow-diagram--dataflow {
+  padding: 1rem 0.75rem 1.25rem;
+  overflow-x: auto;
+}
+
+.workflow-diagram--dataflow svg {
+  display: block;
+  width: 100%;
+  min-width: 520px;
+  height: auto;
+  max-height: min(560px, 72vh);
+}
+
 /* Demo videos on project report pages */
 .report-video-grid {
   display: grid;
