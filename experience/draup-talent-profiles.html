@@ -53,7 +53,7 @@
               I worked on a large-scale talent pipeline that ingests profiles from LinkedIn, Doximity, Google Scholar, Crunchbase, and related sources, then enriches and cleans them through ML models and external APIs. Free-text and structured fields are normalized for a single analytical language surface (English), and company names, titles, and locations are synonymized through multiple dedicated models; skills are inferred by a separate model. After enrichment, data is denormalized and loaded into Postgres for customer-facing analytics. I cut end-to-end model runtime by about half, built quality checks across layers, and helped take production failures from roughly 60% of runs down to about 5%.
             </p>
             <p>
-              This system was already in flight when I joined; my contribution centered on <strong>performance</strong>, <strong>reliability</strong>, and <strong>data quality</strong>—making the heavy ML stages cheaper to run, ensuring bad rows were caught before they reached Postgres, and hardening the weakest joins and external calls so the pipeline could sustain regular refreshes without firefighting.
+              This system was already in flight when I joined; my contribution centered on <strong>performance</strong>, <strong>reliability</strong>, and <strong>data quality</strong>, making the heavy ML stages cheaper to run, ensuring bad rows were caught before they reached Postgres, and hardening the weakest joins and external calls so the pipeline could sustain regular refreshes without firefighting.
             </p>
           </div>
 
@@ -64,7 +64,7 @@
             </p>
             <div class="report-body report-body--inline">
               <p>
-                Raw profiles arrive with inconsistent schemas, languages, and entity spellings. The PySpark pipeline normalizes parsing, fans out into <strong>parallel enrichment branches</strong> (language alignment, synonymization, skills inference, and other API-backed cleaners), then merges into a denormalized row shape suited for fast reads in Postgres. That fan-out / merge pattern isolates slow or flaky model calls so one stage does not block unrelated work longer than necessary.
+                Raw profiles arrive with inconsistent schemas, languages, and entity spellings. The PySpark pipeline normalizes parsing, fans out into <strong>parallel enrichment branches</strong> (language alignment, synonymization, skills inference, and other API-backed cleaners), then merges into a denormalized row shape suited for fast reads in Postgres. That fan-out and merge pattern isolates slow or flaky model calls so one stage does not block unrelated work longer than necessary.
               </p>
               <p>
                 <strong>Company name, job title, and location</strong> strings are synonymized using several synonym models so downstream reporting groups variants to canonical entities. <strong>Skills</strong> are predicted by a dedicated model once text fields are stable. Denormalization trades storage for query simplicity: analytics products read wide tables without repeating expensive joins across the serving path.
@@ -109,7 +109,7 @@
                   <line x1="460" y1="196" x2="460" y2="220" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr)" />
                   <rect x="48" y="292" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
                   <text x="148" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">English normalization</text>
-                  <text x="148" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Translate / align text</text>
+                  <text x="148" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Translate · align text</text>
                   <rect x="360" y="292" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
                   <text x="460" y="314" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Synonym models</text>
                   <text x="460" y="330" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Company · title · location</text>
@@ -136,7 +136,7 @@
             </figure>
             <div class="report-body">
               <p>
-                The diagram highlights two ideas that mattered in production: <strong>parallel enrichment</strong> so independent models could scale out, and a deliberate <strong>merge point</strong> where quality rules could see the full enriched row before denormalization. That merge point is where many latent inconsistencies surfaced—for example, a canonical company string paired with a title still in another language—so checks here prevented confusing customer-facing slices.
+                The diagram highlights two ideas that mattered in production: <strong>parallel enrichment</strong> so independent models could scale out, and a deliberate <strong>merge point</strong> where quality rules could see the full enriched row before denormalization. That merge point is where many latent inconsistencies surfaced (for example, a canonical company string paired with a title still in another language), so checks here prevented confusing customer-facing slices.
               </p>
             </div>
           </section>
@@ -177,7 +177,7 @@
                   <text x="398" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Language detection</text>
                   <text x="398" y="80" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Per-field or record signals</text>
                   <rect x="548" y="40" width="220" height="48" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
-                  <text x="658" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Translate / align → English</text>
+                  <text x="658" y="64" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Translate · align to English</text>
                   <text x="658" y="80" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Model or API · keep IDs stable</text>
                   <line x1="248" y1="64" x2="288" y2="64" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
                   <line x1="508" y1="64" x2="548" y2="64" stroke="#6b7380" stroke-width="1.2" marker-end="url(#talent-arr2)" />
@@ -203,7 +203,7 @@
             </p>
             <div class="report-body report-body--inline">
               <p>
-                The brag doc called out <strong>multiple synonym models</strong> for company name, job title, and location—reflecting that each attribute has different ambiguity and vocabulary. Titles are sparse and creative; companies appear with legal suffixes, rebrands, and subsidiaries; locations mix geocodes, free text, and abbreviations. The pipeline routes each attribute family to the model stack tuned for that problem, then joins canonical identifiers back onto the profile.
+                The brag doc called out <strong>multiple synonym models</strong> for company name, job title, and location, reflecting that each attribute has different ambiguity and vocabulary. Titles are sparse and creative; companies appear with legal suffixes, rebrands, and subsidiaries; locations mix geocodes, free text, and abbreviations. The pipeline routes each attribute family to the model stack tuned for that problem, then joins canonical identifiers back onto the profile.
               </p>
               <p>
                 Synonymization sits after text is in a <strong>consistent language</strong> (English) so string similarity and gazetteer lookups behave predictably. Outputs feed both Postgres serving tables and downstream aggregates: if two spellings collapse to one canonical employer, customer dashboards stop double-counting talent pools.
@@ -267,7 +267,7 @@
                 I implemented <strong>data quality checks across multiple layers</strong>: early schema and parsing guarantees after ingest, per-stage validations around model outputs (null rates, score distributions, unexpected cardinality), and pre-load assertions on denormalized rows. The goal was to fail fast inside the pipeline instead of shipping silent errors to analytics consumers.
               </p>
               <p>
-                Reliability work targeted the highest-loss failure modes: fragile joins, unstable external APIs, and resource contention during peak model inference. Together with quality gating, optimizations brought the failure rate from roughly <strong>60%</strong> of production runs to about <strong>5%</strong>, while model-side tuning reduced total model runtime by about <strong>50%</strong>—making scheduled refreshes predictable enough for product teams to trust.
+                Reliability work targeted the highest-loss failure modes: fragile joins, unstable external APIs, and resource contention during peak model inference. Together with quality gating, optimizations brought the failure rate from roughly <strong>60%</strong> of production runs to about <strong>5%</strong>, while model-side tuning reduced total model runtime by about <strong>50%</strong>, making scheduled refreshes predictable enough for product teams to trust.
               </p>
             </div>
           </section>

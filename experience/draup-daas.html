@@ -50,7 +50,7 @@
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I built and evolved a data-as-a-service delivery framework: customer data requirements expressed as structured input drive scheduled pipelines that generate warehouse queries, execute them, and push results to the right destination. A GraphQL layer turns requirement JSON into SQL; Airflow orchestrates the full run path; Trino (and Spark where needed) executes the work. I then introduced a multi-agent stack to analyze requirements, pick the right physical tables and relationships, and iteratively generate and fix SQL or Spark code—improving typical query time by about 20% and cutting automated-run failures by about 40%.
+              I built and evolved a data as a service delivery framework: customer data requirements expressed as structured input drive scheduled pipelines that generate warehouse queries, execute them, and push results to the right destination. A GraphQL layer turns requirement JSON into SQL; Airflow orchestrates the full run path; Trino (and Spark where needed) executes the work. I then introduced a multi-agent stack to analyze requirements, pick the right physical tables and relationships, and iteratively generate and fix SQL or Spark code, improving typical query time by about 20% and cutting automated-run failures by about 40%.
             </p>
             <p>
               Before this work, standing up a new customer export often meant bespoke jobs and fragile hand-written SQL. The framework treats a delivery as a contract: capture the requirement once, compile it to executable code, run it on a schedule, and surface clear lineage from configuration through execution. That pattern scales to many customers without multiplying operational toil.
@@ -64,7 +64,7 @@
             </p>
             <div class="report-body report-body--inline">
               <p>
-                Each delivery starts from the customer’s <strong>data requirement</strong>: which entities, filters, grains, and refresh cadence they need. The orchestration layer collects that configuration on the schedule we owe them, calls a <strong>GraphQL API</strong> that accepts the requirement as JSON, and receives back a <strong>SQL script</strong> tailored to our semantic graph and physical layout. Airflow sequences the steps—fetch requirements, invoke the API, materialize or stream results—so retries, alerting, and dependencies stay consistent across tenants.
+                Each delivery starts from the customer’s <strong>data requirement</strong>: which entities, filters, grains, and refresh cadence they need. The orchestration layer collects that configuration on the schedule we owe them, calls a <strong>GraphQL API</strong> that accepts the requirement as JSON, and receives back a <strong>SQL script</strong> tailored to our semantic graph and physical layout. Airflow sequences the steps (fetch requirements, invoke the API, materialize or stream results) so retries, alerting, and dependencies stay consistent across tenants.
               </p>
               <p>
                 Execution targets <strong>Trino</strong> against the analytical warehouse for interactive SQL paths; where volume or shape demands it, the same logical requirement can map to <strong>Spark</strong> jobs. Keeping compilation (graph API) separate from execution (engine) meant we could evolve the warehouse and customer contracts independently while preserving one operational playbook.
@@ -88,7 +88,7 @@
                   <rect x="1" y="1" width="918" height="478" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
                   <rect x="48" y="36" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
                   <text x="148" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Customer schedule</text>
-                  <text x="148" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Cron / SLA window</text>
+                  <text x="148" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Cron · SLA window</text>
                   <rect x="276" y="36" width="200" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
                   <text x="376" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Data requirement</text>
                   <text x="376" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">JSON contract per tenant</text>
@@ -96,7 +96,7 @@
                   <text x="604" y="60" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Metadata store</text>
                   <text x="604" y="74" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Requirements registry</text>
                   <rect x="732" y="36" width="140" height="48" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
-                  <text x="802" y="66" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Secrets / routing</text>
+                  <text x="802" y="66" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Secrets · routing</text>
                   <rect x="228" y="124" width="464" height="56" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
                   <text x="460" y="148" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Airflow DAG: collect requirements · task boundaries · retries</text>
                   <text x="460" y="166" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Single orchestration spine for all customer deliveries</text>
@@ -122,7 +122,7 @@
             </figure>
             <div class="report-body">
               <p>
-                The diagram shows the <strong>linear spine</strong> operators rely on: everything funnels through Airflow so a failed compile or a slow cluster query shows up as the same class of incident, with logs tied to a requirement version and tenant. The optional agent step sits in the middle on purpose—it improves the artifact before it touches the warehouse, rather than patching failures only after the fact.
+                The diagram shows the <strong>linear spine</strong> operators rely on: everything funnels through Airflow so a failed compile or a slow cluster query shows up as the same class of incident, with logs tied to a requirement version and tenant. The optional agent step sits in the middle on purpose: it improves the artifact before it touches the warehouse, rather than patching failures only after the fact.
               </p>
             </div>
           </section>
@@ -191,7 +191,7 @@
             </figure>
             <div class="report-body">
               <p>
-                Splitting responsibilities across agents keeps each step <strong>auditable</strong>: you can inspect which tables were selected and why before trusting a query plan. The feedback edge from the engine back into analysis and codegen is the critical difference from static templating—it encodes the warehouse’s real behavior, not only its documentation.
+                Splitting responsibilities across agents keeps each step <strong>auditable</strong>: you can inspect which tables were selected and why before trusting a query plan. The feedback edge from the engine back into analysis and codegen is the critical difference from static templating: it encodes the warehouse’s real behavior, not only its documentation.
               </p>
             </div>
           </section>
@@ -200,7 +200,7 @@
             <h2 id="daas-impact-title">Impact summary</h2>
             <div class="report-body">
               <p>
-                The framework turned customer exports into a <strong>repeatable product surface</strong>: GraphQL in, SQL out, Airflow in the middle, Trino and Spark at the bottom. Agent-assisted optimization and the multi-agent codegen loop delivered measurable improvements—about <strong>20% faster</strong> typical query execution and about <strong>40% fewer failures</strong> on automated runs—without abandoning the structured requirement contract that operations and customers already understood.
+                The framework turned customer exports into a <strong>repeatable product surface</strong>: GraphQL in, SQL out, Airflow in the middle, Trino and Spark at the bottom. Agent-assisted optimization and the multi-agent codegen loop delivered measurable improvements (about <strong>20% faster</strong> typical query execution and about <strong>40% fewer failures</strong> on automated runs) without abandoning the structured requirement contract that operations and customers already understood.
               </p>
             </div>
           </section>

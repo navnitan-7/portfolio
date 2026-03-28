@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="LLM-based maintenance assist at Honeywell: document ingestion, pgvector, Azure Search, pluggable RAG. Navnitan SV."
+      content="Honeywell LLM maintenance assist: cross domain plug and play RAG, Azure Document Intelligence, pgvector, Azure Search, hybrid retrieval. Navnitan SV."
     />
     <title>LLM Based Maintenance Assist · Honeywell · Navnitan SV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,18 +50,130 @@
           </header>
           <div class="report-body">
             <p class="lead-summary">
-              I designed an ingestion and retrieval stack that pulled maintenance documents from many formats and systems into a single searchable layer, using Azure Document Intelligence, embeddings in pgvector, and semantic search so a maintenance assistant could answer with grounded context. The pipeline was modular: parsers and embedders plug in, so we could swap models without rewriting the core flow.
+              I designed a <strong>plug and play</strong> ingestion and retrieval platform for an LLM based maintenance assistant. Honeywell’s maintenance organizations span many industry domains, each with its own manuals, bulletins, and operational vocabulary, so the stack had to accept new corpora and filters without a ground up rebuild. The same core pipeline served that breadth: layout aware extraction, chunking aligned to procedures, embeddings in <strong>pgvector</strong>, and hybrid retrieval with <strong>Azure Cognitive Search</strong>, with small interfaces for parsers and embedders so models and backends could evolve independently.
             </p>
             <p>
-              Maintenance knowledge was scattered across PDFs, scans, legacy CMMS exports, and vendor bulletins. I built an ingestion framework that normalizes those heterogeneous sources: layout-aware extraction with Azure Document Intelligence, chunking tuned for procedure boundaries, and metadata that preserved document type and equipment tags for filtering.
+              Maintenance knowledge lived in PDFs, scans, legacy CMMS exports, vendor notices, and internal runbooks. The ingestion framework normalized those sources through <strong>Azure Document Intelligence</strong>, then applied chunking tuned to procedure boundaries and metadata that preserved document type, equipment identifiers, and <strong>domain or product line</strong> so retrieval could be scoped per business unit or site.
             </p>
             <p>
-              For retrieval we combined vector search (embeddings stored in Postgres with pgvector) with semantic ranking in Azure Cognitive Search so technicians got passages that matched intent, not just keywords. That materially improved precision and recall for chatbot-style queries compared with our earlier lexical-only baseline.
-            </p>
-            <p>
-              The architecture was deliberately pluggable: parsers, embedders, and the search backend communicate through small interfaces, which made it practical to trial new embedding models or routing strategies without a rewrite. That mattered because the LLM landscape was moving quickly and we needed upgrade paths without stopping shipping features.
+              At query time, vector search over Postgres and semantic ranking in Azure Search were composed so answers drew on passages that matched technician intent, not only keywords: a clear step up from a lexical only baseline. The modular contract between ingestion, embedding, and search made it practical to trial new embedding models or routing strategies while continuing to ship features.
             </p>
           </div>
+
+          <section class="report-wide" aria-labelledby="workflow-title">
+            <h2 id="workflow-title">End to end workflow</h2>
+            <p class="report-sublead">
+              From heterogeneous documents across Honeywell businesses to grounded answers: one shared platform, domain specific configuration at the edges.
+            </p>
+
+            <h3 class="report-subsection-title">Multi domain inputs</h3>
+            <div class="report-body report-body--inline">
+              <p>
+                Different Honeywell segments reuse the same maintenance <em>pattern</em> (diagnose, procedure, parts, safety) but not the same document libraries. The platform treated each vertical as a <strong>tenant style corpus</strong>: connectors and metadata profiles pointed at the right document stores and tag vocabularies (equipment families, sites, regulatory context) while the extract → chunk → index → retrieve flow stayed identical.
+              </p>
+            </div>
+
+            <h3 class="report-subsection-title">Ingestion and indexing</h3>
+            <div class="report-body report-body--inline">
+              <p>
+                Documents flowed through a shared <strong>extraction</strong> stage (layout and tables where it mattered for procedures), then <strong>normalization and chunking</strong> with stable identifiers and rich metadata for filtering. Chunks were written to <strong>pgvector</strong> for dense retrieval and surfaced through <strong>Azure Cognitive Search</strong> for semantic and hybrid ranking. Keeping those paths behind narrow interfaces meant a new domain could often be onboarded by adding parsers, taxonomy mappings, and index filters, not by forking the assistant.
+              </p>
+            </div>
+
+            <h3 class="report-subsection-title">Query path and grounding</h3>
+            <div class="report-body report-body--inline">
+              <p>
+                A technician question triggered <strong>hybrid retrieval</strong>: embedding similarity plus search side semantic signals, constrained by domain and asset metadata when available. The top passages were passed to the LLM as context so responses stayed <strong>grounded</strong> in approved maintenance content, with room to tighten citations or policies per deployment.
+              </p>
+            </div>
+
+            <figure class="dataflow-figure">
+              <figcaption>
+                Dataflow: maintenance documents from multiple Honeywell industry domains fan into shared extraction and chunking; dual indexing (pgvector + Azure Search) supports hybrid retrieval; the assistant returns answers grounded in retrieved passages.
+              </figcaption>
+              <div class="workflow-diagram workflow-diagram--dataflow" role="presentation">
+                <svg viewBox="0 0 920 560" xmlns="http://www.w3.org/2000/svg" aria-labelledby="rag-flow-title rag-flow-desc">
+                  <title id="rag-flow-title">LLM maintenance assist platform dataflow</title>
+                  <desc id="rag-flow-desc">
+                    Multiple domain document sources connect to shared document intelligence and chunking, then to pgvector and Azure Search, then hybrid retrieval and the maintenance assistant for technicians.
+                  </desc>
+                  <defs>
+                    <marker id="rag-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                      <polygon points="0 0, 7 3.5, 0 7" fill="#6b7380" />
+                    </marker>
+                  </defs>
+                  <rect x="1" y="1" width="918" height="558" rx="10" fill="none" stroke="rgba(255,255,255,0.06)" />
+                  <!-- Domain sources -->
+                  <rect x="32" y="24" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="126" y="44" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Building / smart energy docs</text>
+                  <text x="126" y="58" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">SOPs, OEM manuals</text>
+                  <rect x="244" y="24" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="338" y="44" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Industrial &amp; process</text>
+                  <text x="338" y="58" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">HSE, turnaround guides</text>
+                  <rect x="456" y="24" width="188" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="550" y="44" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Aerospace &amp; defense MRO</text>
+                  <text x="550" y="58" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Task cards, AD notes</text>
+                  <rect x="668" y="24" width="220" height="44" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="778" y="44" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Shared + ad hoc corpora</text>
+                  <text x="778" y="58" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">PDFs, scans, CMMS exports</text>
+                  <!-- Ingest hub -->
+                  <rect x="238" y="100" width="444" height="48" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="122" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Azure Document Intelligence, pluggable parsers</text>
+                  <text x="460" y="138" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Layout aware extract, domain metadata profile</text>
+                  <line x1="126" y1="68" x2="380" y2="100" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <line x1="338" y1="68" x2="420" y2="100" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <line x1="550" y1="68" x2="460" y2="100" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <line x1="778" y1="68" x2="540" y2="100" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <!-- Chunk -->
+                  <rect x="318" y="180" width="284" height="44" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="200" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Chunk, procedure boundaries, stable IDs</text>
+                  <text x="460" y="216" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Equipment tags, doc type, domain filter fields</text>
+                  <line x1="460" y1="148" x2="460" y2="180" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <!-- Embed + Search -->
+                  <rect x="88" y="268" width="240" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="208" y="292" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Pluggable embedder</text>
+                  <text x="208" y="308" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Model swap without core rewrite</text>
+                  <rect x="340" y="268" width="240" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="292" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Postgres, pgvector</text>
+                  <text x="460" y="308" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Dense vector store</text>
+                  <rect x="592" y="268" width="240" height="52" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="712" y="292" text-anchor="middle" fill="#e8eaef" font-size="11" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Azure Cognitive Search</text>
+                  <text x="712" y="308" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Semantic + lexical index</text>
+                  <path d="M 400 224 L 208 268" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#rag-arr)" />
+                  <line x1="460" y1="224" x2="460" y2="268" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <path d="M 520 224 L 712 268" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#rag-arr)" />
+                  <!-- Query -->
+                  <rect x="120" y="368" width="200" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="220" y="392" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Technician question</text>
+                  <rect x="360" y="356" width="200" height="64" rx="8" fill="rgba(196,165,116,0.12)" stroke="#c4a574" stroke-width="1.25" />
+                  <text x="460" y="382" text-anchor="middle" fill="#c4a574" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">Hybrid retrieval</text>
+                  <text x="460" y="400" text-anchor="middle" fill="#9aa3b2" font-size="9" font-family="DM Sans, system-ui, sans-serif">Vectors + search rank, metadata filters</text>
+                  <rect x="600" y="368" width="200" height="40" rx="8" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="700" y="392" text-anchor="middle" fill="#e8eaef" font-size="11" font-family="DM Sans, system-ui, sans-serif">Ranked passages</text>
+                  <line x1="320" y1="388" x2="360" y2="388" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <line x1="560" y1="388" x2="600" y2="388" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <path d="M 208 320 L 220 368" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#rag-arr)" />
+                  <line x1="460" y1="320" x2="460" y2="356" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <path d="M 712 320 L 700 368" stroke="#6b7380" stroke-width="1.2" fill="none" marker-end="url(#rag-arr)" />
+                  <!-- Assistant -->
+                  <rect x="318" y="448" width="284" height="48" rx="8" fill="#12171f" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="470" text-anchor="middle" fill="#e8eaef" font-size="12" font-weight="600" font-family="DM Sans, system-ui, sans-serif">LLM maintenance assistant</text>
+                  <text x="460" y="486" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Grounded answer, domain scoped context</text>
+                  <line x1="460" y1="420" x2="460" y2="448" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                  <rect x="376" y="520" width="168" height="28" rx="6" fill="#181e29" stroke="#9aa3b2" stroke-width="1" />
+                  <text x="460" y="538" text-anchor="middle" fill="#9aa3b2" font-size="10" font-family="DM Sans, system-ui, sans-serif">Technician / field workflow</text>
+                  <line x1="460" y1="496" x2="460" y2="520" stroke="#6b7380" stroke-width="1.2" marker-end="url(#rag-arr)" />
+                </svg>
+              </div>
+            </figure>
+
+            <h3 class="report-subsection-title">What plug and play meant in practice</h3>
+            <div class="report-body report-body--inline">
+              <p>
+                <strong>Parsers and extractors</strong> implemented a common output shape (text blocks, table cells, provenance) so new file types or vendor layouts plugged in without changing downstream chunking contracts. <strong>Embedders</strong> sat behind a thin API: the same job runner could target a new model dimension or provider once the store and index mappings were updated. <strong>Corpus configuration</strong> (which indexes, filters, and synonym lists applied) let another Honeywell business line stand up a maintenance assistant reusing the platform while keeping content isolated and relevant. That separation between <em>shared mechanics</em> and <em>domain configuration</em> is what made the system reusable across industries inside the company.
+              </p>
+            </div>
+          </section>
         </div>
       </article>
     </main>
