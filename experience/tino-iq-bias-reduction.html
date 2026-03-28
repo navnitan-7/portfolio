@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="TINO IQ internship: Cyclic Boosting from Wick et al. (arXiv:2002.03425), interpretable tabular ML in Python. Navnitan SV."
+    />
+    <title>Cyclic Boosting (Wick et al.) · TINO IQ · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#experience">← Back to experience</a>
+          </p>
+          <header class="report-header">
+            <p class="report-context">TINO IQ · Data Science Intern · May 2020 — Aug 2020</p>
+            <h1 class="report-title">Cyclic Boosting for interpretable tabular models</h1>
+            <p class="report-tech">
+              Python · NumPy ·
+              <a href="https://arxiv.org/abs/2002.03425" target="_blank" rel="noopener noreferrer">Wick et al., arXiv:2002.03425</a>
+            </p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              I reproduced the <strong>Cyclic Boosting</strong> algorithm from Felix Wick, Ulrich Kerzel, and Michael Feindt,
+              <cite>Cyclic Boosting — an explainable supervised machine learning algorithm</cite> (<a href="https://arxiv.org/abs/2002.03425" target="_blank" rel="noopener noreferrer">arXiv:2002.03425</a>; originally ICMLA 2019). The method builds an additive supervised model by cycling over dimensions so individual predictions stay traceable—addressing the paper’s goal of accuracy without the black-box behavior of typical deep or ensemble stacks.
+            </p>
+            <p>
+              At TINO IQ the business question was tabular prediction where stakeholders still needed to see how inputs drive outputs, including situations where opaque scores complicate fairness review. An ordinary linear regression pipeline was the natural baseline: quick to ship but shallow for interaction structure and harder to extend when accuracy stalled.
+            </p>
+            <p>
+              I translated the paper’s cyclic fitting recipe into a NumPy-first Python trainer: successive rounds update dimension-wise (weak) contributions while preserving the separable additive form described in the paper. That kept the implementation aligned with the published procedure rather than a hand-wavy “boosted linear” sketch.
+            </p>
+            <p>
+              On the company’s prepared tabular datasets—same splits and evaluation protocol as the linear baseline—the Cyclic Boosting model improved accuracy by more than 10%. Training code used vectorized routines and batched updates so we could afford hyperparameter sweeps and ablations on internship timelines.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="IoT data contextualization at Honeywell: Neo4j, PySpark, Databricks, Postgres, ML vs rules. Navnitan SV."
+    />
+    <title>IoT Data Contextualization · Honeywell · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#experience">← Back to experience</a>
+          </p>
+          <header class="report-header">
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <h1 class="report-title">IoT Data Contextualization</h1>
+            <p class="report-tech">Neo4j · PySpark · Databricks · Postgres</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              I built ETL on Databricks and Neo4j that ingested very large IoT metadata and telemetry streams and turned them into contextualized views downstream teams could query. Replacing brittle rules with ML-based contextualization removed most manual triage, and tightening Postgres schemas and hot-path queries improved API latency and throughput for the services on top.
+            </p>
+            <p>
+              Industrial IoT generates enormous volumes of sensor metadata and time-series telemetry; the hard part is not storage but attaching the right context—asset lineage, site hierarchy, relationships between devices—so applications can query a coherent graph of “what this device is” rather than raw identifiers.
+            </p>
+            <p>
+              I implemented scalable ETL in PySpark on Databricks to land and transform those feeds, then modeled relationships in Neo4j for traversals and enrichment that would have been painful in purely relational form. Where the organization had relied on hand-maintained rules, I integrated ML-driven contextualization services that learned patterns from historical resolutions, cutting manual intervention by roughly 80% for the noisiest classes of ambiguity.
+            </p>
+            <p>
+              Serving APIs still sat on Postgres for transactional reads. I redesigned several hot schemas and rewrote pathological queries so the contextualized views responded within SLOs as fan-out grew—improving latency, scalability, and overall throughput for the teams building customer dashboards and workflows on top.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

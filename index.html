@@ -17,7 +17,7 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="header-inner">
-        <a class="logo" href="#">Navnitan SV</a>
+        <a class="logo" href="index.html">Navnitan SV</a>
         <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
           <span class="nav-toggle-bar" aria-hidden="true"></span>
           <span class="nav-toggle-bar" aria-hidden="true"></span>
@@ -78,25 +78,22 @@
                 <p class="card-meta">SDE 2 · Dec 2024 — Present</p>
               </div>
             </header>
-            <div class="card-block">
+            <a class="card-block card-block--link" href="experience/draup-daas.html">
               <h4 class="card-subtitle">DAAS</h4>
               <p class="card-tags">GraphQL · Airflow · Trino</p>
-              <ul class="card-list">
-                <li>Built a data delivery framework automating customer data pipelines with configurable schedules and GraphQL API integration.</li>
-                <li>Orchestrated end-to-end pipeline using Airflow to collect requirements, invoke Graph API, and execute Trino SQL scripts.</li>
-                <li>Enhanced framework with AI Agents to optimize generated SQL, reducing query runtime by 20% and failure rate by 40%.</li>
-              </ul>
-            </div>
-            <div class="card-block">
+              <p class="card-summary">
+                I owned a data-delivery framework that lets customers get exports on a schedule, wired through GraphQL and executed end-to-end in Airflow—from gathering requirements and calling our graph layer to running Trino SQL. Later I layered in agent-assisted SQL optimization, which cut average query time by about a fifth and dropped failures substantially.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
+            <a class="card-block card-block--link" href="experience/draup-talent-profiles.html">
               <h4 class="card-subtitle">Talent Profiles Pipeline</h4>
               <p class="card-tags">PySpark · ML Models · Postgres</p>
-              <ul class="card-list">
-                <li>Engineered a big data pipeline ingesting talent profiles from LinkedIn, Doximity, Google Scholar, and Crunchbase.</li>
-                <li>Optimized ML models for entity synonymization and skills prediction, reducing overall model runtime by 50%.</li>
-                <li>Developed multi-layer data quality checks across pipeline stages, proactively catching data issues before customer delivery.</li>
-                <li>Improved pipeline reliability through targeted optimizations, reducing failure rate from 60% to 5% across production runs.</li>
-              </ul>
-            </div>
+              <p class="card-summary">
+                I built and hardened a PySpark pipeline that ingests talent profiles from several major sources, runs synonymization and skills models, and lands in Postgres. Along the way I halved model runtime, added quality gates at multiple stages so bad data never shipped, and drove production failures down from the majority of runs to a small, manageable rate.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
           </article>
 
           <!-- Honeywell -->
@@ -107,41 +104,38 @@
                 <p class="card-meta">Backend Engineer · Jul 2022 — Nov 2024</p>
               </div>
             </header>
-            <div class="card-block">
+            <a class="card-block card-block--link" href="experience/honeywell-iot-contextualization.html">
               <h4 class="card-subtitle">IoT Data Contextualization</h4>
               <p class="card-tags">Neo4j · PySpark · Databricks · Postgres</p>
-              <ul class="card-list">
-                <li>Built scalable ETL pipelines ingesting and contextualizing sensor’s metadata using high-volume IoT metadata and telemetry data.</li>
-                <li>Integrated ML-driven contextualization services replacing legacy rule-based logic, reducing manual intervention by 80%.</li>
-                <li>Optimized Postgres schemas and queries, improving API response latency, scalability, and overall system throughput.</li>
-              </ul>
-            </div>
-            <div class="card-block">
+              <p class="card-summary">
+                I built ETL on Databricks and Neo4j that ingested very large IoT metadata and telemetry streams and turned them into contextualized views downstream teams could query. Replacing brittle rules with ML-based contextualization removed most manual triage, and tightening Postgres schemas and hot-path queries improved API latency and throughput for the services on top.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
+            <a class="card-block card-block--link" href="experience/honeywell-llm-maintenance.html">
               <h4 class="card-subtitle">LLM Based Maintenance Assist</h4>
               <p class="card-tags">Pgvector · Azure Document Intelligence · Azure Search</p>
-              <ul class="card-list">
-                <li>Developed scalable ingestion and search framework consolidating maintenance documents from multiple heterogeneous sources.</li>
-                <li>Implemented vector search with semantic retrieval methods, boosting accuracy and relevance of chatbot query responses.</li>
-                <li>Designed flexible pluggable architecture integrating parsing and embedding services, supporting future model upgrades.</li>
-              </ul>
-            </div>
-            <div class="card-block">
+              <p class="card-summary">
+                I designed an ingestion and retrieval stack that pulled maintenance documents from many formats and systems into a single searchable layer, using Azure Document Intelligence, embeddings in pgvector, and semantic search so a maintenance assistant could answer with grounded context. The pipeline was modular—parsers and embedders plug in—so we could swap models without rewriting the core flow.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
+            <a class="card-block card-block--link" href="experience/honeywell-postgres-cicd.html">
               <h4 class="card-subtitle">Postgres CI/CD Automation</h4>
               <p class="card-tags">Postgres · Git · Octopus · Bamboo</p>
-              <ul class="card-list">
-                <li>Engineered robust CI/CD pipeline automating schema and procedure version control, reducing manual deployments by 80%.</li>
-                <li>Built change-detection service for tables and procedures, streamlining releases and reducing deployment failures 60%.</li>
-              </ul>
-            </div>
-            <div class="card-block">
+              <p class="card-summary">
+                I automated how database schema and stored procedures moved from Git to production through Octopus and Bamboo, with change detection for tables and procedures so releases stayed small and reviewable. That cut manual DB deployment work sharply and removed a large share of rollback-prone releases.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
+            <a class="card-block card-block--link" href="experience/honeywell-enterprise-analytics.html">
               <h4 class="card-subtitle">Enterprise Analytics</h4>
               <p class="card-tags">Snowflake · SAP · SFDC · Azure · Fuzzy matching</p>
-              <ul class="card-list">
-                <li>Built dashboards analyzing maintenance by machine and site, identifying high-cost assets, helping reduce expenses 15%.</li>
-                <li>Engineered cloud cost monitoring platform integrating utilization data, preventing over-provisioning and reducing spend by 20%.</li>
-                <li>Engineered fuzzy matching algorithm for entity resolution, improving customer record mapping accuracy across datasets 35%.</li>
-              </ul>
-            </div>
+              <p class="card-summary">
+                I delivered analytics that tied Snowflake, SAP, Salesforce, and Azure usage data to operational outcomes—maintenance dashboards by asset and site surfaced cost drivers, and a utilization-based cloud cost monitor helped rein in waste. I also shipped fuzzy entity matching that materially improved how customer records lined up across systems.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
           </article>
 
           <!-- TINO IQ -->
@@ -152,15 +146,14 @@
                 <p class="card-meta">Data Science Intern · May 2020 — Aug 2020</p>
               </div>
             </header>
-            <div class="card-block">
-              <h4 class="card-subtitle">Bias Reduction in Predictive Models</h4>
-              <p class="card-tags">Python · Cyclic Boosting · Linear Regression</p>
-              <ul class="card-list">
-                <li>Developed an interpretable model reducing bias compared to linear regression, ensuring fairness and reproducibility in prediction.</li>
-                <li>Implemented boosting algorithm from research paper, improving predictive performance and maintaining transparency in model.</li>
-                <li>Achieved over 10% accuracy improvement by applying cyclic boosting on large-scale datasets with optimized training pipelines.</li>
-              </ul>
-            </div>
+            <a class="card-block card-block--link" href="experience/tino-iq-bias-reduction.html">
+              <h4 class="card-subtitle">Cyclic Boosting (Wick et al., arXiv:2002.03425)</h4>
+              <p class="card-tags">Python · NumPy · Linear baselines</p>
+              <p class="card-summary">
+                I implemented Cyclic Boosting as in Wick, Kerzel, and Feindt’s ICMLA 2019 paper (arXiv:2002.03425): an additive, dimension-cycled learner that stays explainable while handling tabular regression. On the company dataset it beat a linear baseline by more than 10% on accuracy under the same evaluation protocol.
+              </p>
+              <p class="card-block-hint">Open detailed report →</p>
+            </a>
           </article>
         </div>
       </section>
@@ -169,21 +162,22 @@
         <div class="section-inner">
           <h2 class="section-title">Projects</h2>
           <div class="project-grid">
-            <article class="project-card">
+            <a class="project-card project-card--link" href="projects/grid-2-flipkart.html">
               <h3 class="project-title">Grid 2.0 — Flipkart Hackathon</h3>
               <p class="project-tech">Python · CNN · Image Recognition · ROS</p>
-              <p class="project-desc">
-                Ranked in the top 1% among 20,000+ teams, advancing through multiple competitive rounds. Built CNN-powered object detection pipeline with ROS integration, enabling Arm motion planning for accurate manipulation. Designed real-time inference system using RGB-D cameras and feedback control loops.
+              <p class="project-summary">
+                Top 1% among 20k+ teams in a multi-round robotics hackathon: CNN-based perception with ROS and real-time control for pick-and-place with a robotic arm.
               </p>
-            </article>
-            <article class="project-card">
+              <p class="project-card-hint">Open detailed report →</p>
+            </a>
+            <a class="project-card project-card--link" href="projects/semantic-search-engine.html">
               <h3 class="project-title">Semantic search engine</h3>
               <p class="project-tech">Python · NLP · ESA · BERT</p>
-              <p class="project-desc">
-                Semantic search on the Cranfield dataset with ESA, normalization, and BERT-based spell correction;
-                trained on Wikipedia; nDCG@3 0.234.
+              <p class="project-summary">
+                Academic IR project on Cranfield: explicit semantic analysis (ESA) over Wikipedia-backed vectors, normalization, and BERT spell correction—nDCG@3 0.234.
               </p>
-            </article>
+              <p class="project-card-hint">Open detailed report →</p>
+            </a>
           </div>
         </div>
       </section>

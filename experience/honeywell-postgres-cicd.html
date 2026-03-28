@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Postgres CI/CD automation at Honeywell: Git, Octopus, Bamboo, schema and procedure change detection. Navnitan SV."
+    />
+    <title>Postgres CI/CD Automation · Honeywell · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#experience">← Back to experience</a>
+          </p>
+          <header class="report-header">
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <h1 class="report-title">Postgres CI/CD Automation</h1>
+            <p class="report-tech">Postgres · Git · Octopus · Bamboo</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              I automated how database schema and stored procedures moved from Git to production through Octopus and Bamboo, with change detection for tables and procedures so releases stayed small and reviewable. That cut manual DB deployment work sharply and removed a large share of rollback-prone releases.
+            </p>
+            <p>
+              Before automation, schema drift and hand-applied hotfixes made releases risky: it was hard to prove what had run in which environment, and rollbacks were expensive. I built a CI/CD path that treats Postgres artifacts like application code—versioned in Git, built in Bamboo, and promoted through Octopus with explicit approval gates.
+            </p>
+            <p>
+              The differentiator was a change-detection service that diffs declared tables and procedures against what was already deployed, generating migration scripts only for real deltas. That reduced accidental full redeploys, made code review focused, and cut deployment failures by roughly 60% because fewer partial or conflicting changes reached production.
+            </p>
+            <p>
+              Together, these practices reduced manual database deployments by about 80% in terms of engineer-hours per release—freeing the team to prioritize correctness and performance instead of copy-paste execution in SQL clients.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

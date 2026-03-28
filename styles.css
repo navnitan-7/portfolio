@@ -326,6 +326,32 @@ a:hover {
   border-top: 1px solid var(--border);
 }
 
+.card-block--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  margin-left: -0.35rem;
+  margin-right: -0.35rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  padding-bottom: 0.15rem;
+  transition: background 0.15s ease;
+}
+
+.card-block--link:hover {
+  background: var(--accent-soft);
+}
+
+.card-block--link:hover .card-subtitle {
+  color: var(--accent);
+}
+
+.card-block--link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .card-subtitle {
   font-size: 1rem;
   font-weight: 600;
@@ -346,6 +372,17 @@ a:hover {
 
 .card-list li + li {
   margin-top: 0.5rem;
+}
+
+.card-summary {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  max-width: 72ch;
+}
+
+.card-summary + .card-summary {
+  margin-top: 0.75rem;
 }
 
 .project-grid {
@@ -377,6 +414,105 @@ a:hover {
   margin: 0;
   font-size: 0.9375rem;
   color: var(--text-muted);
+}
+
+.project-summary {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+
+.project-card--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-card--link:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.project-card--link:hover .project-title {
+  color: var(--accent);
+}
+
+.project-card--link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.project-card-hint,
+.card-block-hint {
+  margin: 0.85rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.report-page {
+  padding-top: 2rem;
+}
+
+.report-inner {
+  max-width: 52rem;
+}
+
+.report-back {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+}
+
+.report-context {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.report-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.report-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.report-tech {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--accent);
+}
+
+.report-body {
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+  max-width: 65ch;
+}
+
+.report-body p {
+  margin: 0 0 1rem;
+}
+
+.report-body p:last-child {
+  margin-bottom: 0;
+}
+
+.lead-summary {
+  color: var(--text);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
 }
 
 .split {

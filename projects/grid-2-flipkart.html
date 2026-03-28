@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Grid 2.0 — Flipkart Hackathon: CNN perception, ROS, and robotic manipulation. By Navnitan SV."
+    />
+    <title>Grid 2.0 — Flipkart Hackathon · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#projects">← Back to projects</a>
+          </p>
+          <header class="report-header">
+            <h1 class="report-title">Grid 2.0 — Flipkart Hackathon</h1>
+            <p class="report-tech">Python · CNN · Image Recognition · ROS</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              Top 1% among 20k+ teams in a multi-round robotics hackathon: CNN-based perception with ROS and real-time control for pick-and-place with a robotic arm.
+            </p>
+            <p>
+              Grid 2.0 was a Flipkart-sponsored hackathon focused on autonomous manipulation: teams progressed through several elimination rounds, and our entry finished in the top 1% out of more than twenty thousand.
+            </p>
+            <p>
+              I worked on the perception and execution stack in Python. We used a convolutional network for object detection and classification on camera frames, exposed results through ROS so planning nodes could subscribe to stable object poses in the robot frame.
+            </p>
+            <p>
+              On the robot side, RGB-D sensors fed the detector; arm motion was planned using that feedback so grasps stayed aligned as the scene changed. The emphasis was on low-latency inference and closed-loop corrections rather than a single open-loop plan—so the arm could adjust as detection noise and lighting varied.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Enterprise analytics at Honeywell: Snowflake, maintenance dashboards, cloud cost monitoring, fuzzy entity matching. Navnitan SV."
+    />
+    <title>Enterprise Analytics · Honeywell · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#experience">← Back to experience</a>
+          </p>
+          <header class="report-header">
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <h1 class="report-title">Enterprise Analytics</h1>
+            <p class="report-tech">Snowflake · SAP · SFDC · Azure · Fuzzy matching</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              I delivered analytics that tied Snowflake, SAP, Salesforce, and Azure usage data to operational outcomes—maintenance dashboards by asset and site surfaced cost drivers, and a utilization-based cloud cost monitor helped rein in waste. I also shipped fuzzy entity matching that materially improved how customer records lined up across systems.
+            </p>
+            <p>
+              For maintenance and reliability stakeholders, I built dashboards that slice spend and downtime by machine, line, and site—making it obvious which assets were driving the largest share of work orders and spare-part cost. That visibility supported a roughly 15% reduction in avoidable maintenance expense by prioritizing the right interventions.
+            </p>
+            <p>
+              Separately, I engineered a cloud cost monitoring platform that joins utilization signals from Azure and related sources with contract and allocation metadata. The goal was to catch over-provisioning and orphaned resources before they appear on the invoice; in practice the organization reduced relevant cloud spend by about 20% in the tracked environments.
+            </p>
+            <p>
+              Customer and asset identity is fragmented across SAP, Salesforce, and custom databases. I implemented a fuzzy matching pipeline for entity resolution—tuned thresholds, blocking keys, and human-review queues for edge cases—that lifted mapping accuracy across key datasets by approximately 35%, which downstream reporting and integrations depended on.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

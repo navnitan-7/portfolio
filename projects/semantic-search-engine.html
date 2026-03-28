@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Semantic search on Cranfield with ESA, Wikipedia vectors, and BERT spell correction. By Navnitan SV."
+    />
+    <title>Semantic search engine · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#projects">← Back to projects</a>
+          </p>
+          <header class="report-header">
+            <h1 class="report-title">Semantic search engine</h1>
+            <p class="report-tech">Python · NLP · ESA · BERT</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              Academic IR project on Cranfield: explicit semantic analysis (ESA) over Wikipedia-backed vectors, normalization, and BERT spell correction—nDCG@3 0.234.
+            </p>
+            <p>
+              This was a semantic search system built on the classic Cranfield benchmark collection, aimed at ranking short relevance judgments more like a human would than a literal keyword engine.
+            </p>
+            <p>
+              Documents and queries were represented with Explicit Semantic Analysis (ESA): terms expand into weighted concept vectors backed by Wikipedia, so related wording still overlaps in concept space even when the strings differ. I applied consistent text normalization before indexing so punctuation and casing did not fragment the vocabulary.
+            </p>
+            <p>
+              Query preprocessing included spell correction using BERT masked language modeling, which helped noisy or mistyped queries map closer to the right concepts. After retrieval and ranking, we measured nDCG@3 at 0.234 on Cranfield—reasonable for a lightweight academic pipeline without heavy neural reranking.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>

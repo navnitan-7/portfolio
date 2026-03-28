@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="LLM-based maintenance assist at Honeywell: document ingestion, pgvector, Azure Search, pluggable RAG. Navnitan SV."
+    />
+    <title>LLM Based Maintenance Assist · Honeywell · Navnitan SV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="../index.html">Navnitan SV</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav id="site-nav" class="site-nav" aria-label="Primary">
+          <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#experience">Experience</a></li>
+            <li><a href="../index.html#projects">Projects</a></li>
+            <li><a href="../index.html#skills">Skills</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article class="section report-page">
+        <div class="section-inner report-inner">
+          <p class="report-back">
+            <a href="../index.html#experience">← Back to experience</a>
+          </p>
+          <header class="report-header">
+            <p class="report-context">Honeywell · Backend Engineer · Jul 2022 — Nov 2024</p>
+            <h1 class="report-title">LLM Based Maintenance Assist</h1>
+            <p class="report-tech">Pgvector · Azure Document Intelligence · Azure Search</p>
+          </header>
+          <div class="report-body">
+            <p class="lead-summary">
+              I designed an ingestion and retrieval stack that pulled maintenance documents from many formats and systems into a single searchable layer, using Azure Document Intelligence, embeddings in pgvector, and semantic search so a maintenance assistant could answer with grounded context. The pipeline was modular—parsers and embedders plug in—so we could swap models without rewriting the core flow.
+            </p>
+            <p>
+              Maintenance knowledge was scattered across PDFs, scans, legacy CMMS exports, and vendor bulletins. I built an ingestion framework that normalizes those heterogeneous sources: layout-aware extraction with Azure Document Intelligence, chunking tuned for procedure boundaries, and metadata that preserved document type and equipment tags for filtering.
+            </p>
+            <p>
+              For retrieval we combined vector search—embeddings stored in Postgres with pgvector—with semantic ranking in Azure Cognitive Search so technicians got passages that matched intent, not just keywords. That materially improved precision and recall for chatbot-style queries compared with our earlier lexical-only baseline.
+            </p>
+            <p>
+              The architecture was deliberately pluggable: parsers, embedders, and the search backend communicate through small interfaces, which made it practical to trial new embedding models or routing strategies without a rewrite. That mattered because the LLM landscape was moving quickly and we needed upgrade paths without stopping shipping features.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Navnitan SV</p>
+        <p class="footer-note">Hosted on GitHub Pages</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      var nav = document.getElementById("site-nav");
+      var toggle = document.querySelector(".nav-toggle");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      });
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        });
+      });
+    </script>
+  </body>
+</html>
